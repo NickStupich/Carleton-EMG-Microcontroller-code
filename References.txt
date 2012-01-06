@@ -1,0 +1,35 @@
+References
+
+getting log2(x) for sin table lookup
+http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
+
+Numerical recipes - the art of scientific computing - pdf
+chapter 4 - fft algorithm, realft()
+http://www.mathcs.org/java/programs/FFT/FFTInfo/c12-3.pdf
+
+general pinout and device info
+Usbizi user manual - pdf
+
+user manual lpc23xx - pdf
+all the info about programming the stuff low level
+
+general c# micro info
+apress expert net micro framework - pdf
+
+original fft algorithm (real and complex)
+http://www.codeproject.com/KB/recipes/howtofft.aspx
+
+getting started with rlp programming
+http://wiki.tinyclr.com/index.php?title=RLP_Getting_Started
+
+recording analog signals as high rate
+http://wiki.tinyclr.com/index.php?title=RLP_Realtime_Audio_Recording
+
+basic managed serial programming (for bluetooth)
+http://wiki.tinyclr.com/index.php?title=UART_-_PC_Communication
+
+Microsoft patent on recognizing gestures from forearm emg signal
+http://appft.uspto.gov/netacgi/nph-Parser?Sect1=PTO1&Sect2=HITOFF&d=PG01&p=1&u=%2Fnetahtml%2FPTO%2Fsrchnum.html&r=1&f=G&l=50&s1=%2220090327171%22.PGNR.&OS=DN/20090327171&RS=DN/20090327171
+
+Pyserial
+http://pyserial.sourceforge.net/index.html

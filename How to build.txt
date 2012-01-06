@@ -1,0 +1,22 @@
+To get everything compiling you'll need:
+
+
+For the general micro c# stuff for the managed fez domino code:
+Visual Studio 2010 (earlier might work?)
+
+Microsoft .NET Micro Framework 4.1 SDK 
+	http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=8515
+	
+GHI NETMF v4.1 and .NET Gadgeteer Package
+	http://www.ghielectronics.com/downloads/NETMF/GHI%20NETMF%20v4.1%20and%20.NET%20Gadgeteer%20Package.zip
+	
+RLP code compilation:
+both from http://www.yagarto.de/:
+	YAGARTO Tools
+	 YAGARTO GNU ARM toolchain (in this order)
+	 
+python (tested with 2.7, but will likely work with other versions)
+	not completely neccessary, i just used it to generate the 
+	sin table and analyze the space remaining on the device.
+	Without python, you'll get a bunch of errors in the build script, but it'll still work.
+	Just don't try to change the size of the sin table

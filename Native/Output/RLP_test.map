@@ -1,0 +1,247 @@
+Archive member included because of file (symbol)
+
+c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o)
+                              Debug.o (__aeabi_uidiv)
+c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_dvmd_tls.o)
+                              c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o) (__aeabi_idiv0)
+c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+                              fourier.o (__aeabi_fsub)
+c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+                              fourier.o (__aeabi_fmul)
+c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+                              main.o (__aeabi_f2uiz)
+
+Allocating common symbols
+Common symbol       size              file
+
+transformBins       0x9               main.o
+currentData         0xc00             main.o
+transformScalingValue
+                    0x1               main.o
+transformData       0x400             main.o
+items               0x78              main.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+SDRAM            0x40000440         0x000027fc         xw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/lib\libc.a
+LOAD c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a
+LOAD Debug.o
+LOAD main.o
+LOAD Bluetooth.o
+LOAD AnalogRead.o
+LOAD fourier.o
+LOAD sin.o
+LOAD time.o
+LOAD pwm.o
+START GROUP
+LOAD c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a
+LOAD c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/lib\libc.a
+END GROUP
+                0x00000000                . = ALIGN (0x4)
+
+.text           0x40000440     0x15e0
+ *(.text)
+ .text          0x40000440       0xe0 Debug.o
+                0x40000440                _Debug
+                0x4000048c                _Debug_uint
+ .text          0x40000520      0x4b0 main.o
+                0x40000520                processCallback
+                0x4000062c                AnalogReadCallback
+                0x400006a8                setupScheduling
+                0x40000798                sendTransformData
+                0x400007d0                copyDataToTempArray
+                0x40000874                FourierCallback
+                0x40000904                Start
+                0x400009bc                Stop
+ .text          0x400009d0       0x20 Bluetooth.o
+                0x400009d0                sendByte
+ .text          0x400009f0       0x14 AnalogRead.o
+                0x400009f0                analogByteRead
+ .text          0x40000a04      0x750 fourier.o
+                0x40000a04                floatLT
+                0x40000a60                four1
+                0x40000d0c                _sqrt
+                0x40000d4c                realft
+                0x40000fd4                transformToBins
+ .text          0x40001154       0x30 sin.o
+                0x40001154                sin
+ .text          0x40001184        0x0 time.o
+ .text          0x40001184      0x18c pwm.o
+                0x40001184                setPwm
+                0x400011f8                pwmSetup
+ .text          0x40001310      0x114 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o)
+                0x40001310                __aeabi_uidiv
+                0x40001310                __udivsi3
+                0x40001404                __aeabi_uidivmod
+ .text          0x40001424        0x4 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_dvmd_tls.o)
+                0x40001424                __aeabi_idiv0
+                0x40001424                __aeabi_ldiv0
+ .text          0x40001428      0x2ac c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+                0x40001428                __aeabi_frsub
+                0x40001430                __subsf3
+                0x40001430                __aeabi_fsub
+                0x40001434                __aeabi_fadd
+                0x40001434                __addsf3
+                0x400015f0                __aeabi_ui2f
+                0x400015f0                __floatunsisf
+                0x400015f8                __aeabi_i2f
+                0x400015f8                __floatsisf
+                0x40001618                __aeabi_ul2f
+                0x40001618                __floatundisf
+                0x40001628                __aeabi_l2f
+                0x40001628                __floatdisf
+ .text          0x400016d4      0x2f8 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+                0x400016d4                __mulsf3
+                0x400016d4                __aeabi_fmul
+                0x4000186c                __aeabi_fdiv
+                0x4000186c                __divsf3
+ .text          0x400019cc       0x54 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+                0x400019cc                __fixunssfsi
+                0x400019cc                __aeabi_f2uiz
+
+.glue_7         0x40001a20        0x0
+ .glue_7        0x00000000        0x0 linker stubs
+
+.glue_7t        0x40001a20        0x0
+ .glue_7t       0x00000000        0x0 linker stubs
+
+.vfp11_veneer   0x40001a20        0x0
+ .vfp11_veneer  0x00000000        0x0 linker stubs
+
+.v4_bx          0x40001a20        0x0
+ .v4_bx         0x00000000        0x0 linker stubs
+                0x40001a20                . = ALIGN (0x4)
+
+.rodata         0x40001a20       0x24
+ *(.rodata)
+ .rodata        0x40001a20       0x24 sin.o
+                0x40001a20                data
+                0x40001a44                . = ALIGN (0x4)
+
+.data           0x40001a44        0x0
+ *(.data)
+ .data          0x40001a44        0x0 Debug.o
+ .data          0x40001a44        0x0 main.o
+ .data          0x40001a44        0x0 Bluetooth.o
+ .data          0x40001a44        0x0 AnalogRead.o
+ .data          0x40001a44        0x0 fourier.o
+ .data          0x40001a44        0x0 sin.o
+ .data          0x40001a44        0x0 time.o
+ .data          0x40001a44        0x0 pwm.o
+ .data          0x40001a44        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o)
+ .data          0x40001a44        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_dvmd_tls.o)
+ .data          0x40001a44        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+ .data          0x40001a44        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+ .data          0x40001a44        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+                0x40001a44                . = ALIGN (0x4)
+
+.bss            0x40001a44     0x1088
+                0x40001a44                __bss_start__ = .
+ *(.bss)
+ .bss           0x40001a44        0x0 Debug.o
+ .bss           0x40001a44        0x2 main.o
+                0x40001a44                status
+                0x40001a45                dataIndex
+ .bss           0x40001a46        0x0 Bluetooth.o
+ .bss           0x40001a46        0x0 AnalogRead.o
+ .bss           0x40001a46        0x0 fourier.o
+ .bss           0x40001a46        0x0 sin.o
+ .bss           0x40001a46        0x0 time.o
+ .bss           0x40001a46        0x0 pwm.o
+ .bss           0x40001a46        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o)
+ .bss           0x40001a46        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_dvmd_tls.o)
+ .bss           0x40001a46        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+ .bss           0x40001a46        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+ .bss           0x40001a46        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+                0x40001a46                __bss_end__ = .
+ *fill*         0x40001a46        0x2 00
+ COMMON         0x40001a48     0x1084 main.o
+                0x40001a48                transformBins
+                0x40001a52                currentData
+                0x40002652                transformScalingValue
+                0x40002654                transformData
+                0x40002a54                items
+                0x40002acc                end = .
+OUTPUT(./Output/RLP_test.elf elf32-littlearm)
+
+.comment        0x00000000       0x11
+ .comment       0x00000000       0x11 Debug.o
+                                 0x12 (size before relaxing)
+ .comment       0x00000000       0x12 main.o
+ .comment       0x00000000       0x12 Bluetooth.o
+ .comment       0x00000000       0x12 AnalogRead.o
+ .comment       0x00000000       0x12 fourier.o
+ .comment       0x00000000       0x12 sin.o
+ .comment       0x00000000       0x12 time.o
+ .comment       0x00000000       0x12 pwm.o
+
+.ARM.attributes
+                0x00000000       0x32
+ .ARM.attributes
+                0x00000000       0x32 Debug.o
+ .ARM.attributes
+                0x00000032       0x32 main.o
+ .ARM.attributes
+                0x00000064       0x32 Bluetooth.o
+ .ARM.attributes
+                0x00000096       0x32 AnalogRead.o
+ .ARM.attributes
+                0x000000c8       0x32 fourier.o
+ .ARM.attributes
+                0x000000fa       0x32 sin.o
+ .ARM.attributes
+                0x0000012c       0x32 time.o
+ .ARM.attributes
+                0x0000015e       0x32 pwm.o
+ .ARM.attributes
+                0x00000190       0x1a c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o)
+ .ARM.attributes
+                0x000001aa       0x18 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_dvmd_tls.o)
+ .ARM.attributes
+                0x000001c2       0x1a c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+ .ARM.attributes
+                0x000001dc       0x1a c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+ .ARM.attributes
+                0x000001f6       0x1a c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+
+.debug_frame    0x00000000       0x20
+ .debug_frame   0x00000000       0x20 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o)
+
+.debug_line     0x00000000      0x3c4
+ .debug_line    0x00000000       0x93 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o)
+ .debug_line    0x00000093       0x6a c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_dvmd_tls.o)
+ .debug_line    0x000000fd      0x120 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+ .debug_line    0x0000021d      0x12a c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+ .debug_line    0x00000347       0x7d c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+
+.debug_info     0x00000000      0x2f5
+ .debug_info    0x00000000       0x98 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o)
+ .debug_info    0x00000098       0x98 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_dvmd_tls.o)
+ .debug_info    0x00000130       0x97 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+ .debug_info    0x000001c7       0x97 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+ .debug_info    0x0000025e       0x97 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+
+.debug_abbrev   0x00000000       0x64
+ .debug_abbrev  0x00000000       0x14 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o)
+ .debug_abbrev  0x00000014       0x14 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_dvmd_tls.o)
+ .debug_abbrev  0x00000028       0x14 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+ .debug_abbrev  0x0000003c       0x14 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+ .debug_abbrev  0x00000050       0x14 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+
+.debug_aranges  0x00000000       0xa0
+ .debug_aranges
+                0x00000000       0x20 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_udivsi3.o)
+ .debug_aranges
+                0x00000020       0x20 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_dvmd_tls.o)
+ .debug_aranges
+                0x00000040       0x20 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+ .debug_aranges
+                0x00000060       0x20 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+ .debug_aranges
+                0x00000080       0x20 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)

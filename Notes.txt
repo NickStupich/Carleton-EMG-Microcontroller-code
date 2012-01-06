@@ -1,0 +1,106 @@
+Notes:
+
+Managed code - too slow to compute the fft on the go, running analog reads on 1 channel ~= 100% cpu usage
+
+Bluetooth communication - read from managed code for simplicity, write to native code for speed
+Channels are opened in managed code because it's easier and farrr more readable/easy to change
+-Don't really care about taking longer at startup - small fractions of a second anyways
+
+Analog reads - done in native code for speed - can also tune the ADC to use 3-10 bits - picked 8 so that storing in a char is possible
+
+"NativeFFT_Nov8":
+		fft(unsigned char* data, unsigned char* result) - Problems:
+			uses an array of floats for storing intermediate values before changing them back to char while returning result - wastes spaces
+			result was a separate array - wastes space.  Does allow the main program to send data over bluetooth asynchronously
+				but we don't intend to send the full array (just bins) so that shouldn't matter
+			does the fft on complex data, so is wasteful in computation time as well as space.  does use shorter code than
+				when doing an fft of real values only (and using possible optimizations for that)
+		sin table:
+			no built in sin function, so a naive table was used
+			generated at compile time for a specified number of data points
+			only accurate for specific values passed in
+			fft requires the sin of only certain values, so many will be inaccurate if the closest value is not exactly what
+				is required
+			wasted space for any values not actually used
+		results:
+			memory limits us to N = 128 for the length of data for fft
+			time for fft for n = 128 is approx 6ms
+			
+NativeFFT2_Nov24:	
+		void realft(float data[], unsigned long n) - 
+			does the fft of real data (using optimizations), in place
+			requires main code to convert analog read data to float values
+			
+		sin tables: float sin(unsigned int x) 
+			returns sin(2*pi / x), since this is all that is used by the fft algorithm
+			
+		sin table (version1):
+			switch statement - lookup values by x
+			approx 0.56us / call
+			
+		sin table(version2):
+			take y = log2(x), return dataArray[y]
+			saves 144bytes over version1
+			runtime: approx 0.72us / call
+			however, sin() is only called 2(for real only manipulation) + 2*log2(n) times (18 for an fft on 256 values),
+			so using the second version costs only (0.72 -0.56)us * 18 ~= 2.9us, which is pretty tiny (0.03% of time)
+			
+		results:
+			memory limits us to N = 256 - more than before
+			time for fft for N = 256 -> 10.6ms.  fft is O(n*log(n)), so 10.6ms for 256 is significantly faster 
+				than 6ms for 128 from previous version
+				
+		times:
+			fft: 10.6ms for 256
+			copying to new array for transform: 0.19ms
+			
+NativeFFT2:
+		cleaned everything up a bit
+		converted "keepRunning", to status, that holds which pins should be running
+		converted the analogRead stuff to accept the pin number to read from
+			
+		-Discovered floating point libraries that are included when floats are used"
+			-Doubles used in fft code require huge libraries:
+				converting doubles to float and changing constants (ex 1.0 -> 1.0f) saved ~3kb
+			- files included: 
+				_arm_addsubsf3.o - add and subtract floats
+				_arm_muldivsf3.o - multiply and divide floats
+				_arm_cmpsf2.o - compare floats to each other - probably not neccessary, 
+					but if it is, might be able to easily do in inline assembly? 
+					would save 276 bytes - assembly code size
+				_arm_fixunssfsi.o - convert float to int
+			-removing doubles also sped up fft code
+				
+		-Did some analysis of fft data length vs computation time, matches N*log(N) perfectly, excel data + graph
+
+		- removal of doubles allows us to use short instead of int for data values
+			this will allow us to use the full 10 bits of the adc for greater precision
+			allows us to store up to 6bits of gain values in the data buffers
+			using shorts with 256 data length and debugging enabled fills 85% of space
+			
+PWM:
+	assuming 18clock cycle = 1us period works ok:
+		17 value different +duty cycle lengths - use 16 if linear?
+			fed into a low pass filter - simple RC with R = 20k, C = 1.5nF
+		multiply gain value by adc value and store in array
+		
+Dec9 - sending fft in 9 bins / channel + 1 gain + 1 control = 61bytes for 6 channels
+	~22 updates / second = ~10700 bits/second / 57600 baud rate = 19% of time spent sending
+	move to interrupt based serial communication for more speed at expense of memory + complexity?
+	
+Jan4 - fixed bug with realft() indexing from 1 instead of 0.  just subtract 1 from data pointer before passing to realft() function
+			- also line to ignore compiler warnings on that line
+			
+	- 	fixed up scheduling.h, working properly.  Could use a better initial guess for fft timing (especially on more channels)
+	
+	- scheduling file optimization: division of unsigned ints is required for scheduling in a couple places.  
+		This requires 2 additional code libraries totaling 280 bytes.  Instead cast everything to floats, divide then cast back.  Savings
+		in space is 244 bytes.  Performance hasn't been tested, but should be very minimally different/
+		Additional note: division is also currently required for the debugging module to print unsigned ints.  If this optimization is turned on,
+		and debugging is also turned on, the code size will increase.  So if debugging is to remain on, then this optimization should be turned off.
+		
+	- fourier.c file optimization: float compare required, but this pulls in a whole library that is 276 bytes.  Instead, a custom less than
+		function has been implemented that is 100 bytes (and could probably be smaller).  The only function implemented is less than, but thats
+		all that is needed.  Also only implemented for positive numbers. This saves 176 bytes.
+		
+			

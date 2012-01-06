@@ -1,0 +1,61 @@
+Protocols / Commands
+
+These commands start and stop the reading of analog values and the fft algorithm running
+Reason for making the command type the LSB is so that looking at bytes can quickly see 
+what it is by evenness/oddness
+
+Start: (sent from phone/computer to microcontroller over COM1 on controller)
+1 byte - bits are the following:
+0-5 - indicate which channels are being used - 0 = not used, 1 = used
+6 - unused so far
+7 - 1 to indicate start command
+
+Stop: (sent from phone/computer to microcontroller over COM1 on controller)
+0-6 - unused so far
+7 - 0 to indicate stop command
+
+The microcontroller should probably echo the control byte back, or some type of similar response, probably followed by our designated control byte of 255.
+
+Binning of data from fft:
+a preset number of bins that will not be adjustable by the controlling device.
+the microsoft patent used 10 10Hz bins from 2-55, and 65 - 102 hz.  We'll start with something close going from 
+5-15, 15-25, 25-35, 35-45, 45-55, <skip for 60hz noise>, 65-75, 75-85, 85-95, 95-105
+for now at least.  The microcontroller and other device will need to know these frequencies as they will be be mentioned
+anywhere in the data being sent back and forth.
+
+Right now I'm thinking bins with the following ranges:
+8-20
+20-32
+32-44
+44-56
+skip for the hz noise
+64-76
+76-88
+88-100
+100-112
+
+Data:
+Sent from microcontroller to phone/computer over COM1 on controller
+Each bin's value will be from 0-254, leaving byte 255 as a control byte to indicate the start of a cycle of data
+-Recipient should know how many channels are running (it started it, so we shouldn't have to tell it)
+-Channels will be sent in increasing numerical order, skipping anything that's not running
+Each fft will have the following bytes:
+	-Control byte (255) - to indicate the start of the data chunk.  
+	For each channel being run:
+		1 byte to indicate the gain level (0-254).  To most efficiently send the bins back, we could scale the bin values such that the largest bin 
+			will have the maximum possible value (254).  This way precision is not lost on the bins with lower values.  Then the scaling value for
+			the bins will be multiplied by the gain level used by the automatic gain control circuit so that the phone can multiply the gain level by each 
+			bin to get the actual amplitude.  If we require more range we could send another byte for the gain level, possibly separating the automatic gain 
+			control level from the bin scaling value, but I think we can start with one byte.
+		For each bin in channel (10 channels):
+			1 byte for the bin's value (0-254)
+			
+Problems:
+	Sending a single value for the gain byte will not give proper results if the gain changed during the last <time length for 1 buffer to fill, 
+	currently 1/4 second).  I can't think of a good way to solve this without losing lots of precision by multiplying in the gain right away and
+	continuing to store values as single bytes, or using lots more space by either storing all gain values as bytes, or moving the stored data to a higher
+	precision.  Unless i've missed something huge, there won't be space to store this for 6 channels unless we go to a shorter buffer length than 256.
+	
+	Not explicitly a problem, but limiting each byte to 254 to reserve byte 255 as a control byte is kinda shitty, but I can't think of a better way 
+	to do it.  And we definitely need to have something in place in case the connection misses anything.
+			
