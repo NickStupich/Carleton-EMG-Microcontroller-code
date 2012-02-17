@@ -17,6 +17,7 @@ namespace ComputerBluetoothNative
         //static RLP.Procedure rlpStartAnalogRead;
         static RLP.Procedure rlpStop;
         static RLP.Procedure rlpStart;
+        static RLP.Procedure rlpInit;
         //static RLP.Procedure rlpTest;
 
         const int START_BIT = 7;
@@ -38,6 +39,7 @@ namespace ComputerBluetoothNative
             //rlpTest = RLP.GetProcedure(elf_file, "Test");
             rlpStop = RLP.GetProcedure(elf_file, "Stop");
             rlpStart = RLP.GetProcedure(elf_file, "Start");
+            rlpInit = RLP.GetProcedure(elf_file, "Init");
             elf_file = null;
             Debug.GC(true);
 
@@ -54,9 +56,10 @@ namespace ComputerBluetoothNative
             dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived);
             dataPort.Open();
 
-            
-            
             Thread.Sleep(1000); //this makes it easier to install new stuff
+
+            rlpInit.Invoke();
+            
             int result = rlpStart.Invoke(1 | 2 | 4 | (1<<7));
             Debug.Print("Start return value: " + result);
             Thread.Sleep(1000);
