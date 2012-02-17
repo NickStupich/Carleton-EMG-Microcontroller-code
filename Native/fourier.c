@@ -2,49 +2,7 @@
 #include "sin.h"
 #include "Debug.h"
 #include "settings.h"
-
-#define SWAP(a,b) tempr=(a);(a)=(b);(b)=tempr
-
-#if CUSTOM_FLOAT_COMPARE == 1
-
-#include "RLP.h"	//has true and false
-
-#define EXPONENT_BITS		0x7F800000
-#define MANTISSA_BITS		0x7FFFFF
-
-/*works only when both numbers are >0.  Luckily in all cases they are*/
-unsigned int floatLT(float x, float y)
-{
-	typedef union data{
-		float f;
-		unsigned int i;
-	} data;
-		
-	data d1, d2;
-	d1.f = x;
-	d2.f = y;
-	
-	if((d1.i & EXPONENT_BITS) < (d2.i & EXPONENT_BITS))
-	{
-		return RLP_TRUE;
-	}
-	else if(((d1.i & EXPONENT_BITS) == (d2.i & EXPONENT_BITS))
-		&& ((d1.i & MANTISSA_BITS) < (d2.i & MANTISSA_BITS)))
-	{
-		//printf("_4\n");
-		return RLP_TRUE;
-		//return !SIGN_BITMASK(d1.i);
-	}
-	
-	return RLP_FALSE;
-}
-
-#else
-
-#define floatLT(x, y)	(x < y)
-
-#endif
-
+#include "helpers.h"
 
 /*
 514 Chapter 12. Fast Fourier Transform

@@ -14,8 +14,14 @@ unsigned char analogByteRead(unsigned char pin){
 }
 #else
 
+/*
 unsigned char analogByteRead(unsigned char pin){
 	return ((*((int*)(ANALOG_PIN_ZERO) + pin)) >> 8) & 0xFF;
+}
+*/
+
+unsigned short analogRead(unsigned char pin){
+	return ((*((int*)(ANALOG_PIN_ZERO) + pin)) >> 6) & 0x3FF;
 }
 
 #endif

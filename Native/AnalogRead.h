@@ -2,6 +2,7 @@
 
 #ifndef ANALOG_READ
 #define ANALOG_READ
-unsigned char analogByteRead(unsigned char pin);
+//unsigned short analogRead(unsigned char pin);
+unsigned short analogRead(unsigned char pin);
 
 #endif

@@ -26,8 +26,9 @@ OBJS+= Debug.o \
 		fourier.o \
 		sin.o\
 		time.o \
-		pwm.o
-
+		pwm.o \
+		helpers.o
+		
 rebuild: clean all del_o
 
 all: $(OBJS)
@@ -57,6 +58,9 @@ sin.o: sin.c sin.h
 	
 pwm.o: pwm.c pwm.h
 	$(CC) -c $(CCFLAGS) pwm.c -o pwm.o
+	
+helpers.o: helpers.c helpers.h
+	$(CC) -c $(CCFLAGS) helpers.c -o helpers.o
 	
 clean:
 	-rm *.o ./Output/*.elf ./Output/*.map

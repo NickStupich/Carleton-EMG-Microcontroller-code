@@ -4,11 +4,13 @@
 #define PWM_COUNT 	6
 #define PWM1_ADDR	0xE001801C
 
-void pwmSetup(char pins, unsigned int period)
-{
+unsigned int _period = 18;
+
+void pwmSetup(char pins, unsigned int period){
+	_period = period;
 	PWM1TCR |= 1;	//timer runs 
 	
-	char i;
+	unsigned char i;
 	for(i=0;i<PWM_COUNT;i++)
 	{
 		if(pins & 1<<i)
@@ -32,12 +34,7 @@ void pwmSetup(char pins, unsigned int period)
 				case 2:
 					PINSEL3 |= 1<<11;
 					break;
-					/*
-				case 1:
-				case 2:
-					PINSEL3 |= 1<<(9 + (i<<1));
-					break;*/
-					
+		
 				case 3:
 					PINSEL4 |= 1<<6;
 					break;
@@ -49,10 +46,6 @@ void pwmSetup(char pins, unsigned int period)
 				case 5:
 					PINSEL4 |= 1<<10;
 					break;
-				/*
-				default:
-					PINSEL4 |= 1<<(6+(i<<1));
-					break;*/
 			}
 		}
 	}
@@ -60,9 +53,19 @@ void pwmSetup(char pins, unsigned int period)
 	PWM1MR0 = period-1;
 }
 
-void setPwm(char pin, unsigned int positiveDutyCycle)
-{
-	positiveDutyCycle-=1;
+void setPwm(char pin, unsigned int positiveDutyCycle){
+	//normally subtracting 1 from duty cycle makes things like up nicely
+	//however, if 0 or the period is provided, they seem to flip (0 gives the result
+	//that would be expected from the period, and the period produces the result expected
+	//from providing 0.  So this fixes that...
+	
+	if(positiveDutyCycle == 0)
+		positiveDutyCycle = _period - 1;
+	else if(positiveDutyCycle == _period)
+		positiveDutyCycle = -1;
+	else
+		positiveDutyCycle-=1;
+	
 	switch(pin)
 	{
 		case 0:

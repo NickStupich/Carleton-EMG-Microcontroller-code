@@ -82,8 +82,8 @@ void processCallback(void *arg){
 	RLPext->Task.ScheduleTimeOffset(&items[id].task, items[id].delay);	
 }
 
-void setupScheduling(){
-
+void setupScheduling()
+{
 	unsigned char i;
 	for(i=0;i<NUM_ITEMS;i++)
 	{

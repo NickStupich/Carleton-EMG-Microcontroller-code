@@ -6,8 +6,7 @@
 #include "time.h"
 #include "pwm.h"
 #include "scheduling.h"
-
-#define NUM_CHANNELS	6
+#include "gainControl.h"
 
 //about 1kHz, but this way the bins from the fft are exactly 4hz apart
 #define TARGET_READ_FREQUENCY  	1024	//Hz
@@ -23,18 +22,21 @@ unsigned char transformScalingValue;
 counter_t dataIndex = 0;	//index of buffers we're filling
 
 void AnalogReadCallback(void *arg){
-	//Debug("A");
+
 	unsigned char channel;
-	time_t start = readTimer();
+	unsigned char value;
+	//time_t start = readTimer();
 	for(channel = 0;channel < NUM_CHANNELS;channel++)
 	{
-#if READ_EVERY_CHANNEL == 1
-		currentData[channel][dataIndex] = analogByteRead(channel);
-#else
+#if READ_EVERY_CHANNEL == 0
 		if(CHANNEL_IS_ENABLED(status, channel))
 		{
-			unsigned char c = analogByteRead(channel);	
-			currentData[channel][dataIndex] = c;
+#endif
+			value = analogRead(channel);	
+			value = addGainValue(value, channel);
+			currentData[channel][dataIndex] = value;
+//close the brace if we're not reading every channel
+#if READ_EVERY_CHANNEL == 0
 		}
 #endif
 	}
@@ -42,7 +44,7 @@ void AnalogReadCallback(void *arg){
 	dataIndex++;
 	dataIndex %= DATA_LENGTH;
 	
-	Debug_uint(readTimer() - start);
+	//Debug_uint(readTimer() - start);
 }
 
 void sendTransformData(unsigned char scalingValue, unsigned char data[]){
@@ -218,6 +220,7 @@ int Start(unsigned int *generalArray, void **args, unsigned int argsCount, unsig
 		items[1].function = &FourierCallback;
 		items[1].isKernelMode = RLP_FALSE;
 		
+		//#include "setupScheduling.h"
 		setupScheduling();
 	} 
 	else 
@@ -230,7 +233,47 @@ int Start(unsigned int *generalArray, void **args, unsigned int argsCount, unsig
 }
 
 int Stop(unsigned int *generalArray, void **args, unsigned int argsCount, unsigned int *argSize){
-	//Debug("Stop()");
 	status = 0;
 	return status;
+}
+
+/* This should be called at startup.
+Starts the clocks for the Switched Cap filter, and initalizes the PWMs and sets their duty cycle to 50%
+*/
+int Init(unsigned int *generalArray, void **args, unsigned int argsCount, unsigned int *argSize){
+	//start the clock for the SC notch filter (10khz and 20khz signals)
+	
+	PCONP |= (1<<23) | (1<<27);	//power for Timer3 and I2S
+	
+	//10 kHz signal using timer3, making the clock output at pin di8
+	//PCONP |= 1<<23;		//Timer3 power enabled - turned on above
+	PINSEL0 |= 3<<20;		//MAT3.0 on pins p0.10
+	
+	T3TCR = 2;		//disble counter for now
+	T3TC = 0;		//reset timer counter
+	T3PC = 0;		//reset prescale counter
+	T3CTCR = 0;		//timer mode - every rising pclk edge
+	T3PR = 456;		//prescale counter counts to 456 + 1 before incrementing timer
+	//this should be 449 in theory to produce exactly 10kHz, but imperfectly in the switched cap mean we set the clock off by a little
+	//so have the notch perfectly centered at 60Hz
+	
+	T3MR0 = 1;		//flip bit every timer increment
+	T3MCR = 2;		//reset on match with MR0
+	T3TCR = 1;		//enable the counter
+
+	T3CCR = 0;		//clear capture register
+	T3EMR = 1 | (3 << 4);	//external match 0, toggle match bit/output
+	
+	//20 kHz signal using I2S in the SD card interface area, producing the signal at pin D1
+	//PCONP |= (1<<27);I2S power enabled - turned on above
+	
+	PINSEL4 |= (0x3F << 22);	//select clock pin function
+	I2S_DAO = 0x0;				//
+	I2S_TXRATE = 913;	//counter limit for the I2S.  This should be 899 in theory, but setting it to 913 will make the notch 
+	//centered at exactly 120Hz
+	
+	//start up the pwms (all pins) with 50% duty cycle
+	pwmSetup(63, PWM_LEVELS);
+	
+	return 1;
 }

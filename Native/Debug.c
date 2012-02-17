@@ -1,11 +1,9 @@
 #include "Debug.h"
 #include "lpc23xx.h"
 
-
 #define UINT_STRING_LENGTH	10
-#define LSR_TEMT    0x40 //1 << 7;? - test
+#define LSR_TEMT    (1<<7)
 #define SERIAL_PORT_SENDING_COM2	!(U1LSR & LSR_TEMT)
-
 
 #if DEBUG_ON == 1
 
