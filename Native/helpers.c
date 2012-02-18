@@ -8,22 +8,10 @@ unsigned int floatLT(float x, float y){
 		float f;
 		unsigned int i;
 	} data;
-		
-	data d1, d2;
-	d1.f = x;
-	d2.f = y;
 	
-	if((d1.i & EXPONENT_BITS) < (d2.i & EXPONENT_BITS))
-	{
-		return RLP_TRUE;
-	}
-	else if(((d1.i & EXPONENT_BITS) == (d2.i & EXPONENT_BITS))
-		&& ((d1.i & MANTISSA_BITS) < (d2.i & MANTISSA_BITS)))
-	{
-		return RLP_TRUE;
-	}
-	
-	return RLP_FALSE;
+	data d;
+	d.f = x-y;
+	return (d.i & SIGN_BIT)>>31;
 }
 
 #endif
