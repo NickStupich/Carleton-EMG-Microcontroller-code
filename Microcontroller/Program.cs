@@ -37,9 +37,10 @@ namespace ComputerBluetoothNative
             RLP.InitializeBSSRegion(elf_file);
 
             //rlpTest = RLP.GetProcedure(elf_file, "Test");
+
+            rlpInit = RLP.GetProcedure(elf_file, "Init");
             rlpStop = RLP.GetProcedure(elf_file, "Stop");
             rlpStart = RLP.GetProcedure(elf_file, "Start");
-            rlpInit = RLP.GetProcedure(elf_file, "Init");
             elf_file = null;
             Debug.GC(true);
 
@@ -59,13 +60,13 @@ namespace ComputerBluetoothNative
             Thread.Sleep(1000); //this makes it easier to install new stuff
 
             rlpInit.Invoke();
-            
+            /*
             int result = rlpStart.Invoke(1 | 2 | 4 | (1<<7));
             Debug.Print("Start return value: " + result);
             Thread.Sleep(1000);
             result = rlpStop.Invoke();
             Debug.Print("Stop return value: " + result);
-            
+            */
             
             //int result = rlpStart.Invoke();
             //Debug.Print("result of start: " + result);
