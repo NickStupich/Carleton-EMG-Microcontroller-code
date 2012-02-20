@@ -27,7 +27,8 @@ OBJS+= Debug.o \
 		sin.o\
 		time.o \
 		pwm.o \
-		helpers.o
+		helpers.o \
+		gainControl.o
 		
 rebuild: clean all del_o
 
@@ -61,6 +62,9 @@ pwm.o: pwm.c pwm.h
 	
 helpers.o: helpers.c helpers.h
 	$(CC) -c $(CCFLAGS) helpers.c -o helpers.o
+
+gainControl.o: gainControl.c gainControl.h
+	$(CC) -c $(CCFLAGS) gainControl.c -o gainControl.o
 	
 clean:
 	-rm *.o ./Output/*.elf ./Output/*.map

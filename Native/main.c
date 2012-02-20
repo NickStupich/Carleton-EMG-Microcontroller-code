@@ -2,7 +2,6 @@
 #include "Bluetooth.h"
 #include "AnalogRead.h"
 #include "fourier.h"
-#include "constants.h"
 #include "time.h"
 #include "pwm.h"
 #include "scheduling.h"
@@ -143,6 +142,7 @@ void FourierCallback(void *arg){
 			//time_t t0 = readTimer();
 			copyDataToTempArray(channel);
 			//Debug("FC");
+			
 			
 			//time_t t1 = readTimer();
 			//do the fft
