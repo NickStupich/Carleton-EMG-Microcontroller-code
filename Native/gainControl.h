@@ -16,7 +16,18 @@
 #define resetEma(channel) emaNums[channel] = EMA_RESET_NUM; emaDenoms[channel] = EMA_RESET_DENOM;
 
 //stores the current pwm gain level, out of PWM_LEVELS + 1
-unsigned char pwmLevels[NUM_CHANNELS];
+unsigned char pwmLevels[NUM_CHANNELS] = {
+#if NUM_CHANNELS == 1
+PWM_LEVELS/2
+#elif NUM_CHANNELS == 6
+PWM_LEVELS/2,
+PWM_LEVELS/2,
+PWM_LEVELS/2,
+PWM_LEVELS/2,
+PWM_LEVELS/2,
+PWM_LEVELS/2
+#endif
+};
 
 //the gain level of each pwm duty cycle, measured experimentallyn
 //These **MUST** be less or equal to 64 - maximum value stored for reading is 16bits = 65535, max reading is 1023, 
@@ -24,6 +35,30 @@ unsigned char pwmLevels[NUM_CHANNELS];
 //also, top 1 should be close to 64 to use the full range and therefore get hte most resolution
 const float gainLevels[PWM_LEVELS+1] = {
 #if PWM_LEVELS == 18
+// based on values from "VCA analysis 39k" excel file
+64.0f,
+60.87373272f,
+57.86543779f,
+54.85714286f,
+52.16622257f,
+48.92032428f,
+45.82357552f,
+42.67277661f,
+39.76850415f,
+36.67324187f,
+33.53353707f,
+30.66746904f,
+27.555978f,
+24.24417927f,
+20.68415771f,
+17.10407283f,
+13.48265368f,
+9.709738039f,
+6.358299509f,
+
+
+//constant values - gain control is basically off
+/*
 1.0, 
 1.0, 
 1.0,
@@ -43,14 +78,38 @@ const float gainLevels[PWM_LEVELS+1] = {
 1.0, 
 1.0,
 1.0
+*/
 #else
 #error Gain values not defined for the provided PWM_LEVELS
 #endif
 };
 
 //ema values used to control the gain so it doesn't constantly change and go crazy
-float emaNums[NUM_CHANNELS];
-float emaDenoms[NUM_CHANNELS];
+#if NUM_CHANNELS == 6
+float emaNums[NUM_CHANNELS] = {
+	EMA_RESET_NUM, 
+	EMA_RESET_NUM, 
+	EMA_RESET_NUM, 
+	EMA_RESET_NUM, 
+	EMA_RESET_NUM, 
+	EMA_RESET_NUM };
+	
+float emaDenoms[NUM_CHANNELS] = {
+	EMA_RESET_DENOM,
+	EMA_RESET_DENOM,
+	EMA_RESET_DENOM,
+	EMA_RESET_DENOM,
+	EMA_RESET_DENOM,
+	EMA_RESET_DENOM};
+	
+#elif NUM_CHANNELS == 1
+float emaNums[NUM_CHANNELS] = {
+	EMA_RESET_NUM,};
+	
+float emaDenoms[NUM_CHANNELS] = {
+	EMA_RESET_DENOM};
+
+	#endif
 
 //Should probably use a very long term ema of points to get a better estimate of this.
 //do it per channel as well	
@@ -71,13 +130,11 @@ unsigned short addGainValue(unsigned short value, unsigned char channel){
 	value = (unsigned short)(value * gainLevels[pwmLevels[channel]]);
 	
 	//adjust gain level in the right direction if we need to, and aren't at either limit
-	//if((ema > (EMA_TARGET + EMA_RANGE)) && (pwmLevels[channel] < PWM_LEVELS))
 	if(floatLT(EMA_TARGET + EMA_RANGE, ema) && (pwmLevels[channel] < PWM_LEVELS))
 	{
 		pwmLevels[channel]++;
 		setPwm(channel, pwmLevels[channel]);
 		resetEma(channel);
-	//} else if ((ema < EMA_TARGET - EMA_RANGE) && (pwmLevels[channel] > 0))
 	} else if (floatLT(ema, EMA_TARGET - EMA_RANGE) && (pwmLevels[channel] > 0))
 	{
 		pwmLevels[channel]--;

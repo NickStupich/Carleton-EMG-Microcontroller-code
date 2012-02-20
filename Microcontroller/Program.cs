@@ -14,12 +14,10 @@ namespace ComputerBluetoothNative
         static SerialPort debugPort;
         static SerialPort dataPort;
 
-        //static RLP.Procedure rlpStartAnalogRead;
         static RLP.Procedure rlpStop;
         static RLP.Procedure rlpStart;
         static RLP.Procedure rlpInit;
-        //static RLP.Procedure rlpTest;
-
+        
         const int START_BIT = 7;
 
         public static void Main()
@@ -36,27 +34,28 @@ namespace ComputerBluetoothNative
 
             RLP.InitializeBSSRegion(elf_file);
 
-            //rlpTest = RLP.GetProcedure(elf_file, "Test");
-
             rlpInit = RLP.GetProcedure(elf_file, "Init");
             rlpStop = RLP.GetProcedure(elf_file, "Stop");
             rlpStart = RLP.GetProcedure(elf_file, "Start");
             elf_file = null;
             Debug.GC(true);
 
-            //sets up all analog pins as reading
+            //sets up all analog pins as reading, and pwm pins as pwms
             for (int i = 0; i < 6; i++)
             {
                 new AnalogIn((AnalogIn.Pin)i);
+                new PWM((PWM.Pin)i+1);
             }
 
-            debugPort = new SerialPort("COM2", 9600, System.IO.Ports.Parity.None, 8, StopBits.One);
+            /*
+            debugPort = new SerialPort("COM3", 9600, System.IO.Ports.Parity.None, 8, StopBits.One);
             debugPort.Open();
-
-            dataPort = new SerialPort("COM1", 57600, System.IO.Ports.Parity.None, 8, StopBits.One);
+            debugPort.Write(new byte[] { 65, 67, 66 }, 0, 3);
+            */
+            dataPort = new SerialPort("COM2", 57600, System.IO.Ports.Parity.None, 8, StopBits.One);
             dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived);
             dataPort.Open();
-
+            //dataPort.Write(new byte[] { 79, 80, 69, 78 }, 0, 4);
             Thread.Sleep(1000); //this makes it easier to install new stuff
 
             rlpInit.Invoke();

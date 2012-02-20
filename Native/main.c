@@ -10,7 +10,7 @@
 
 //about 1kHz, but this way the bins from the fft are exactly 4hz apart
 #define TARGET_READ_FREQUENCY  	1024	//Hz
-#define TARGET_FFT_FREQUENCY	25		//Hz
+#define TARGET_FFT_FREQUENCY	20		//Hz
 
 unsigned short currentData[NUM_CHANNELS][DATA_LENGTH];	//where the analog reads go
 
@@ -22,7 +22,8 @@ unsigned char transformScalingValue;
 counter_t dataIndex = 0;	//index of buffers we're filling
 
 void AnalogReadCallback(void *arg){
-
+	//sendByte(3);
+	Debug("A");
 	unsigned char channel;
 	unsigned char value;
 	//time_t start = readTimer();
@@ -126,15 +127,9 @@ void copyDataToTempArray(unsigned char channel)
 }*/
 
 void FourierCallback(void *arg){
-	//Debug("F");
-	/*
-	time_t start = readTimer();
-	while(readTimer() - start < 18 * 10000)
-	{
-		
-	}*/
+	//sendByte(4);
+	Debug("F");
 	
-
 	unsigned char channel;
 	
 	//send the control byte to indicate the start of the ffts
@@ -234,6 +229,7 @@ int Start(unsigned int *generalArray, void **args, unsigned int argsCount, unsig
 
 int Stop(unsigned int *generalArray, void **args, unsigned int argsCount, unsigned int *argSize){
 	status = 0;
+	//sendByte(8);
 	return status;
 }
 
@@ -242,36 +238,9 @@ Starts the clocks for the Switched Cap filter, and initalizes the PWMs and sets 
 */
 int Init(unsigned int *generalArray, void **args, unsigned int argsCount, unsigned int *argSize){
 	//start the clock for the SC notch filter (10khz and 20khz signals)
-	
-	PCONP |= (1<<23) | (1<<27);	//power for Timer3 and I2S
-	
-	//10 kHz signal using timer3, making the clock output at pin di8
-	//PCONP |= 1<<23;		//Timer3 power enabled - turned on above
-	PINSEL0 |= 3<<20;		//MAT3.0 on pins p0.10
-	
-	T3TCR = 2;		//disble counter for now
-	T3TC = 0;		//reset timer counter
-	T3PC = 0;		//reset prescale counter
-	T3CTCR = 0;		//timer mode - every rising pclk edge
-	T3PR = 456;		//prescale counter counts to 456 + 1 before incrementing timer
-	//this should be 449 in theory to produce exactly 10kHz, but imperfectly in the switched cap mean we set the clock off by a little
-	//so have the notch perfectly centered at 60Hz
-	
-	T3MR0 = 1;		//flip bit every timer increment
-	T3MCR = 2;		//reset on match with MR0
-	T3TCR = 1;		//enable the counter
-
-	T3CCR = 0;		//clear capture register
-	T3EMR = 1 | (3 << 4);	//external match 0, toggle match bit/output
-	
-	//20 kHz signal using I2S in the SD card interface area, producing the signal at pin D1
-	//PCONP |= (1<<27);I2S power enabled - turned on above
-	
-	PINSEL4 |= (0x3F << 22);	//select clock pin function
-	I2S_DAO = 0x0;				//
-	I2S_TXRATE = 913;	//counter limit for the I2S.  This should be 899 in theory, but setting it to 913 will make the notch 
-	//centered at exactly 120Hz
-	
+	//PCONP |= (1<<23) | (1<<27);	//power for Timer3 and I2S
+	#include "timer3Clock.h"
+	#include "i2sClock.h"
 	//start up the pwms (all pins) with 50% duty cycle
 	pwmSetup(63, PWM_LEVELS);
 	
