@@ -18,7 +18,8 @@ void pwmSetup(char pins, unsigned int period){
 			PWM1PCR |= 1<<(i+9);	//pwm enabled
 			PWM1PCR &= ~(2<<i);		//single edge control mode
 			PWM1LER |= 1<<i;		//latch enable register enabled - will take new values
-			setPwm(i, period>>1);	//set initial duty cycle to 50%
+			setPwm(i, period-1);	//set initial duty cycle to almost 100%.  Having it not 100% makes it easier to make sure it's working,
+				//but setting it high means that we'll have very low gain.  This will hopefully help to produce the ADCs from large voltage spikes
 			
 			//the pin select stuff, different pwms use either PINSEL3 or PINSEl4
 			switch(i)

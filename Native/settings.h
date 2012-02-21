@@ -39,7 +39,7 @@ HOWEVER:
 #define GAIN_CONTROL_ON					1
 
 //number of channels that can be read from.  Maximum is 6
-#define NUM_CHANNELS					1
+#define NUM_CHANNELS					6
 
 //the max number of the pwm, but it actually counts to this value so there is 1 extra gain level
 #define PWM_LEVELS		18
