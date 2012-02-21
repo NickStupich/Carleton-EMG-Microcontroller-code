@@ -19,12 +19,38 @@ unsigned char transformBins[FOURIER_BINS];
 unsigned char transformScalingValue;
 
 counter_t dataIndex = 0;	//index of buffers we're filling
+/*
+void sendUint(unsigned int n){
+	char s[10];
+	int i=0, j=0;
+	char c;
+	
+	//put in a string in reverse order
+	do {       // generate digits in reverse order 
+	 s[i++] = n % 10 + '0';   // get next digit 
+     } while ((n /= 10) > 0);     // delete it 
+     s[i] = '\0';
+	 
+	 //reverse string
+	 for(j=0,i--;j<i;j++,i--)
+	 {
+		c = s[j];
+        s[j] = s[i];
+        s[i] = c;
+	 }
+	 
+	 i=0;
+	 while(s[i])
+		sendByte(s[i++]);
+		
+	sendByte(10);
+}*/
 
 void AnalogReadCallback(void *arg){
 	//sendByte(3);
-	Debug("A");
+	//Debug("A");
 	unsigned char channel;
-	unsigned char value;
+	unsigned short value;
 	//time_t start = readTimer();
 	for(channel = 0;channel < NUM_CHANNELS;channel++)
 	{
@@ -143,9 +169,17 @@ void FourierCallback(void *arg){
 			copyDataToTempArray(channel);
 			//Debug("FC");
 			
-			
 			//time_t t1 = readTimer();
 			//do the fft
+			/*
+			int i;
+			sendUint(0);
+			sendUint(0);
+			sendUint(0);
+			for(i=0;i<DATA_LENGTH;i++)
+			{
+				sendUint((unsigned int)transformData[i]);
+			}*/
 			
 			/*note: realft() is written for a array with starting index of 1 (array[1] is the first element)
 			obviously c doesn't work like that, so we just subtract one from the address to make it work.
@@ -153,17 +187,46 @@ void FourierCallback(void *arg){
 			http://www.mathcs.org/java/programs/FFT/FFTInfo/c12-2.pdf
 			*/
 			#pragma GCC diagnostic ignored "-Warray-bounds"
-			realft(transformData-1, 128);//DATA_LENGTH);
+			realft(transformData-1, DATA_LENGTH);
 			#pragma GCC diagnostic pop
+			/*
+			sendUint(0);
+			sendUint(0);
+			sendUint(0);
+			for(i=0;i<DATA_LENGTH;i++)
+			{
+				sendUint((unsigned int)transformData[i]);
+			}*/
 			
 			//Debug("FF");
 			//time_t t2 = readTimer();
 			//bin the data to be sent
 			transformToBins(transformData, DATA_LENGTH, transformBins, &transformScalingValue);
+			
+			/*
+			sendUint(0);
+			sendUint(0);
+			sendUint(0);
+			sendUint(transformScalingValue);
+			
+			sendUint(0);
+			sendUint(0);
+			sendUint(0);
+			for(i=0;i<FOURIER_BINS;i++)
+			{
+				sendUint((unsigned int)transformBins[i]);
+			}
+			*/
+			
+			//status = 0;
+			//return;
+			
 			//Debug("FB");
 			//time_t t3 = readTimer();
 			//Debug("after realft()");
 			//send away the data
+			
+			
 			sendTransformData(transformScalingValue, transformBins);
 			//Debug("FD");
 			//time_t t4 = readTimer();

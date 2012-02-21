@@ -4,6 +4,8 @@
 #include "settings.h"
 #include "helpers.h"
 
+#define SWAP(a,b) tempr=(a);(a)=(b);(b)=tempr
+
 /*
 514 Chapter 12. Fast Fourier Transform
 visit website http://www.nr.com or call 1-800-872-7423 (North America only),
@@ -92,8 +94,7 @@ http://www.peter-cockerell.net/aalp/html/app-b.html
 more explanation:
 http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Approximations_that_depend_on_IEEE_representation
 */
-float _sqrt(float z)
-{
+float _sqrt(float z){
 	union
     {
         int tmp;
@@ -152,17 +153,72 @@ void realft(float data[], unsigned long n)//, unsigned char transformBins[], uns
 	
 	data[1] = (h1r=data[1])+data[2]; //Squeeze the First and last data together to get them all within the original array.
 	data[2] = h1r-data[2];
-	//Debug("_RF");
+	
+	//scale by 2/n, as should be done to get proper scaling
+	//there might be a better value that could be determined experimentally, but without any division,
+	//the system is quickly to overload when gain control is enable.  Scaling by 2/n  (dividing by 128)
+	//should help this problem
+	
+	float scale = 2.0f / (float)n;
+	for(i=1;i<=n;i++)
+	{
+		data[i] *= scale; 
+	}
+	
 }
 
 void transformToBins(float data[], unsigned long n, unsigned char transformBins[], unsigned char *transformScalingValue)
 {
+	int i,j;		//counters
+	float max = 0;	//keep track of the largest value to divide everything by and send as gain
+	float x;		//used below to make sure individual values aren't too big
 	
-	/*scale data
-	* data is stored as [real, complex, real, complex...]
-	* we only really care about the absolute value of each (real, complex) pair.
-	* all other values are scaled to be within 0-256
-	*/
+	for(i=0;i<n/2;i++)
+	{
+		data[i] = _sqrt(data[i*2] * data[i*2] + data[i*2+1]* data[i*2+1]);
+	}
+	
+	for(i=0, j=START_BIN; j < LAST_BIN;i++, j+=FREQUENCIES_PER_BIN)
+	{
+		if(j == SIXTY_HZ_BIN) j++;
+		
+		data[i] = data[j] + data[j+1] + data[j+2];
+		
+		if(floatLT(max, data[i]))
+			max = data[i];
+	}
+	
+	max /= MAX_TO_SEND_FLOAT;
+	
+	if(floatLT(MAX_TO_SEND_FLOAT, max))
+	{
+		max = MAX_TO_SEND_FLOAT;
+	}
+	else if(floatLT(max, 1.0f))
+	{
+		max = 1.0f;
+	}
+	
+	for(i=0;i<FOURIER_BINS;i++)
+	{
+		x = data[i] / max;
+		if(floatLT(MAX_TO_SEND_FLOAT, x))
+			x = MAX_TO_SEND_FLOAT;
+		
+		transformBins[i] = (unsigned char)(x);
+	}
+	
+	*transformScalingValue = (unsigned char) max;
+}
+/*
+void transformToBins(float data[], unsigned long n, unsigned char transformBins[], unsigned char *transformScalingValue)
+{
+	
+	//scale data
+	//data is stored as [real, complex, real, complex...]
+	//we only really care about the absolute value of each (real, complex) pair.
+	//all other values are scaled to be within 0-256
+	
 	
 	counter_t i, j;
 	//Debug("FFT points");
@@ -228,3 +284,4 @@ void transformToBins(float data[], unsigned long n, unsigned char transformBins[
 	//stick the maximum value back to be sent out 
 	*transformScalingValue = (unsigned char)max;
 }
+*/

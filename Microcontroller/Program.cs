@@ -11,7 +11,7 @@ namespace ComputerBluetoothNative
 {
     public class Program
     {
-        static SerialPort debugPort;
+        //static SerialPort debugPort;
         static SerialPort dataPort;
 
         static RLP.Procedure rlpStop;
@@ -56,9 +56,10 @@ namespace ComputerBluetoothNative
             dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived);
             dataPort.Open();
             //dataPort.Write(new byte[] { 79, 80, 69, 78 }, 0, 4);
-            Thread.Sleep(1000); //this makes it easier to install new stuff
+            Thread.Sleep(2000); //this makes it easier to install new stuff
 
             rlpInit.Invoke();
+            //rlpStart.Invoke(129);
             /*
             int result = rlpStart.Invoke(1 | 2 | 4 | (1<<7));
             Debug.Print("Start return value: " + result);

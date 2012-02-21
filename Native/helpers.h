@@ -1,7 +1,6 @@
 #ifndef HELPERS
 #define HELPERS
 #include "settings.h"
-#define SWAP(a,b) tempr=(a);(a)=(b);(b)=tempr
 
 #if CUSTOM_FLOAT_COMPARE == 1
 

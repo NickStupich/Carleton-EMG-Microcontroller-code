@@ -1,5 +1,6 @@
 #include "Debug.h"
 #include "lpc23xx.h"
+#include "settings.h"
 
 #define UINT_STRING_LENGTH	10
 #define LSR_TEMT    (1<<7)
