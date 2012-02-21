@@ -6,7 +6,7 @@
 #define counter_t				unsigned char
 
 //number of bins that the fft is stuck into before being sent away 
-#define FOURIER_BINS			9
+#define FOURIER_BINS			8
 
 //maximum data value is 1 less...this is probbaly kinda a dumb way to do it
 #define DATA_MAXIMUM			255
