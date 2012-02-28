@@ -293,7 +293,7 @@ int Start(unsigned int *generalArray, void **args, unsigned int argsCount, unsig
 int Stop(unsigned int *generalArray, void **args, unsigned int argsCount, unsigned int *argSize){
 	status = 0;
 	//sendByte(8);
-	pwmSetup(63, PWM_LEVELS);	//reset the pwms back to 50% duty cycle
+	pwmSetup(63, PWM_LEVELS);	//reset the pwms back to very high duty cycle
 	//this will hopefully help to avoid damaging the microcontroller if we get large voltages to the analog in when we're not
 	//actively doing gain control
 	return status;
