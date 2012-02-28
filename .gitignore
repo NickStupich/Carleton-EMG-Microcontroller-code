@@ -2,3 +2,8 @@
 *.s
 *.elf
 *.map
+Microcontroller/Resources/RLP_test.elf
+Microcontroller/bin/*
+Microcontroller/obj/*
+Native/Output/RLP_test.elf
+Native/Output/RLP_test.map
