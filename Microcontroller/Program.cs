@@ -47,29 +47,14 @@ namespace ComputerBluetoothNative
                 new PWM((PWM.Pin)i+1);
             }
 
-            /*
-            debugPort = new SerialPort("COM3", 9600, System.IO.Ports.Parity.None, 8, StopBits.One);
-            debugPort.Open();
-            debugPort.Write(new byte[] { 65, 67, 66 }, 0, 3);
-            */
             dataPort = new SerialPort("COM2", 57600, System.IO.Ports.Parity.None, 8, StopBits.One);
-            dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived);
             dataPort.Open();
-            //dataPort.Write(new byte[] { 79, 80, 69, 78 }, 0, 4);
+            dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived); //open before attaching the event - due to bug in framework
+            //found at http://tinyclr.com/forum/2/4426/
+
             Thread.Sleep(2000); //this makes it easier to install new stuff
 
             rlpInit.Invoke();
-            //rlpStart.Invoke(129);
-            /*
-            int result = rlpStart.Invoke(1 | 2 | 4 | (1<<7));
-            Debug.Print("Start return value: " + result);
-            Thread.Sleep(1000);
-            result = rlpStop.Invoke();
-            Debug.Print("Stop return value: " + result);
-            */
-            
-            //int result = rlpStart.Invoke();
-            //Debug.Print("result of start: " + result);
             Thread.Sleep(Timeout.Infinite);
 
         }
@@ -81,25 +66,6 @@ namespace ComputerBluetoothNative
             {
                 dataPort.Read(buffer, 0, 1);
                 byte data = buffer[0];
-                /*
-                switch ((char)data)
-                {
-                    case 's':
-                    case 'S':
-                        int r1 = rlpStop.Invoke();
-                        Debug.Print("Stopped with result " + r1);
-                        break;
-                    case 'b':
-                    case 'B':
-                        int r2 = rlpStart.Invoke();
-                        Debug.Print("Started with result " + r2);
-                        break;
-                    default:
-                        Debug.Print("unknown letter received");
-                        Debug.Print(new String(new char[] { (char)data }));
-                        break;
-                }*/
-
                 int result;
                 switch (data & (1 << START_BIT))
                 {
