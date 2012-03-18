@@ -8,23 +8,6 @@
 
 #if DEBUG_ON == 1
 
-/*
-void debugSendByte(char c){
-	//wait for ready
-	while (SERIAL_PORT_SENDING_COM2);
-	
-	//send
-	U1THR = c;
-}
-
-void Debug(char* s){
-	while(*s)
-	{
-		debugSendByte(*s++);
-	}
-	debugSendByte(10);	//newline
-}*/
- 
  void _Debug(char* s){
 	while(*s)
 	{

@@ -30,7 +30,7 @@ PWM_LEVELS/2
 #endif
 };
 
-//the gain level of each pwm duty cycle, measured experimentallyn
+//the gain level of each pwm duty cycle, measured experimentally
 //These **MUST** be less or equal to 64 - maximum value stored for reading is 16bits = 65535, max reading is 1023, 
 //multiplying by a gain of > 64 would cause it to loop around and give a low reading.  BAD!!
 //also, top 1 should be close to 64 to use the full range and therefore get hte most resolution
@@ -57,30 +57,6 @@ const float gainLevels[PWM_LEVELS+1] = {
 41.90959292f,
 64.0f
 
-
-
-//constant values - gain control is basically off
-/*
-1.0, 
-1.0, 
-1.0,
-1.0, 
-1.0, 
-1.0, 
-1.0, 
-1.0,
-1.0, 
-1.0, 
-1.0, 
-1.0, 
-1.0,
-1.0, 
-1.0, 
-1.0, 
-1.0, 
-1.0,
-1.0
-*/
 #else
 #error Gain values not defined for the provided PWM_LEVELS
 #endif

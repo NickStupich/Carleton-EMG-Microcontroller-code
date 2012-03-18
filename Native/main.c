@@ -9,51 +9,23 @@
 
 //about 1kHz, but this way the bins from the fft are exactly 4hz apart
 #define TARGET_READ_FREQUENCY  	1024	//Hz
-#define TARGET_FFT_FREQUENCY	20		//Hz
+#define TARGET_FFT_FREQUENCY	40		//Hz
 
 unsigned short currentData[NUM_CHANNELS][DATA_LENGTH];	//where the analog reads go
 
-float transformData[DATA_LENGTH];
+float transformData[DATA_LENGTH];	//copy of data for the channel being FFTed.  gets replaced with frequency data by fft function.
 
-unsigned char transformBins[FOURIER_BINS];
-unsigned char transformScalingValue;
+unsigned char transformBins[FOURIER_BINS];	//nice short little array of bins of interest that were combined together from the fft
+unsigned char transformScalingValue;		//scaling value calculated by the binning algorithm
 
 counter_t dataIndex = 0;	//index of buffers we're filling
-/*
-void sendUint(unsigned int n){
-	char s[10];
-	int i=0, j=0;
-	char c;
-	
-	//put in a string in reverse order
-	do {       // generate digits in reverse order 
-	 s[i++] = n % 10 + '0';   // get next digit 
-     } while ((n /= 10) > 0);     // delete it 
-     s[i] = '\0';
-	 
-	 //reverse string
-	 for(j=0,i--;j<i;j++,i--)
-	 {
-		c = s[j];
-        s[j] = s[i];
-        s[i] = c;
-	 }
-	 
-	 i=0;
-	 while(s[i])
-		sendByte(s[i++]);
-		
-	sendByte(10);
-}*/
 
 void AnalogReadCallback(void *arg){
-	//sendByte(3);
-	//Debug("A");
 	unsigned char channel;
 	unsigned short value;
-	//time_t start = readTimer();
 	for(channel = 0;channel < NUM_CHANNELS;channel++)
 	{
+	
 #if READ_EVERY_CHANNEL == 0
 		if(CHANNEL_IS_ENABLED(status, channel))
 		{
@@ -61,32 +33,26 @@ void AnalogReadCallback(void *arg){
 			value = analogRead(channel);	
 			value = addGainValue(value, channel);
 			currentData[channel][dataIndex] = value;
+			
 //close the brace if we're not reading every channel
 #if READ_EVERY_CHANNEL == 0
 		}
 #endif
 	}
 	
+	//increment the address and loop back around if neccessary
 	dataIndex++;
 	dataIndex %= DATA_LENGTH;
-	
-	//Debug_uint(readTimer() - start);
 }
 
 void sendTransformData(unsigned char scalingValue, unsigned char data[]){
-	//Debug("in sendTransformData()");
 	int i;
-	//send data on data channel serial com
-	//send scaling value
-	//Debug("sending");
 	sendByte(scalingValue);
-	//Debug_uint(scalingValue);
 	
 	//send all the data
 	for(i=0;i<FOURIER_BINS;i++)
 	{
 		sendByte(data[i]);
-		//Debug_uint(data[i]);
 	}	
 }
 
@@ -108,9 +74,6 @@ void copyDataToTempArray(unsigned char channel){
 	//as a half assed concurrency lock, take a copy of the data index in case it changes while copying data.
 	//not even close to failproof...but pretty quick.  and it should at least prevent crashing due to 
 	//overruning bounds of array, though there will be some improperly copied values
-	//Debug("Start");
-	//int t0 = readTimer();
-	
 	
 	//copy over data to an array so we don't modify it while doing the fft
 	int tempDataIndex = dataIndex;
@@ -125,7 +88,8 @@ void copyDataToTempArray(unsigned char channel){
 		transformData[j++] = (float)currentData[channel][i];
 	}
 }
-/*
+/* //better implementation that didn't seem to work, but that could very well have been an unrelated problem because it worked excellently on
+//some test code.  on the other hand, not much smaller or faster so oh well, i guess the compiler is pretty clever
 void copyDataToTempArray(unsigned char channel)
 {
 	//slightly smaller implementation that just straight up array copying
@@ -152,9 +116,6 @@ void copyDataToTempArray(unsigned char channel)
 }*/
 
 void FourierCallback(void *arg){
-	//sendByte(4);
-	Debug("F");
-	
 	unsigned char channel;
 	
 	//send the control byte to indicate the start of the ffts
@@ -165,21 +126,7 @@ void FourierCallback(void *arg){
 	{
 		if(CHANNEL_IS_ENABLED(status, channel))
 		{			
-			//time_t t0 = readTimer();
 			copyDataToTempArray(channel);
-			//Debug("FC");
-			
-			//time_t t1 = readTimer();
-			//do the fft
-			/*
-			int i;
-			sendUint(0);
-			sendUint(0);
-			sendUint(0);
-			for(i=0;i<DATA_LENGTH;i++)
-			{
-				sendUint((unsigned int)transformData[i]);
-			}*/
 			
 			/*note: realft() is written for a array with starting index of 1 (array[1] is the first element)
 			obviously c doesn't work like that, so we just subtract one from the address to make it work.
@@ -189,73 +136,21 @@ void FourierCallback(void *arg){
 			#pragma GCC diagnostic ignored "-Warray-bounds"
 			realft(transformData-1, DATA_LENGTH);
 			#pragma GCC diagnostic pop
-			/*
-			sendUint(0);
-			sendUint(0);
-			sendUint(0);
-			for(i=0;i<DATA_LENGTH;i++)
-			{
-				sendUint((unsigned int)transformData[i]);
-			}*/
-			
-			//Debug("FF");
-			//time_t t2 = readTimer();
+	
 			//bin the data to be sent
 			transformToBins(transformData, DATA_LENGTH, transformBins, &transformScalingValue);
 			
-			/*
-			sendUint(0);
-			sendUint(0);
-			sendUint(0);
-			sendUint(transformScalingValue);
 			
-			sendUint(0);
-			sendUint(0);
-			sendUint(0);
-			for(i=0;i<FOURIER_BINS;i++)
-			{
-				sendUint((unsigned int)transformBins[i]);
-			}
-			*/
-			
-			//status = 0;
-			//return;
-			
-			//Debug("FB");
-			//time_t t3 = readTimer();
-			//Debug("after realft()");
 			//send away the data
-			
-			
 			sendTransformData(transformScalingValue, transformBins);
-			//Debug("FD");
-			//time_t t4 = readTimer();
-			
-			//Debug("copy to temp:");
-			//Debug_uint(t1 - t0);
-			
-			//Debug("realft");
-			//Debug_uint(t2 - t1);
-			
-			//Debug("to bins");
-			//Debug_uint(t3 - t2);
-			
-			//Debug("send");
-			//Debug_uint(t4 - t3);
 		}
 	}
-	
-	//Debug("Fe");
 }
 
 int Start(unsigned int *generalArray, void **args, unsigned int argsCount, unsigned int *argSize){	
-	//Debug("Start()");
-	
 	if(!(status & KEEP_RUNNING_MASK))
 	{
 		status = (char)(*(int*)args[0]);
-		//Debug("S:");
-		//Debug_uint(status);
 		
 		//send the start byte back as an acknowledgement
 		sendByte(status);
@@ -267,18 +162,17 @@ int Start(unsigned int *generalArray, void **args, unsigned int argsCount, unsig
 		items[0].targetFrequency = TARGET_READ_FREQUENCY;
 		items[0].delay = 1000000 / TARGET_READ_FREQUENCY;
 		items[0].function = &AnalogReadCallback;
-		items[0].isKernelMode = RLP_TRUE;
+		items[0].isKernelMode = RLP_TRUE;	//high priority, will interrupt the fft callback
 		
 		//fft callback
-		//initial delay is high enough to that the analog reads can fill the buffer (twice) to make sure we don't send an 
+		//initial delay is high enough to that the analog reads can fill the buffer (thrice) to make sure we don't send an 
 		//fft based on garbage data.  Currently the delay is only about 0.5 seconds
-		items[1].initialDelay = 2000000 * DATA_LENGTH / TARGET_READ_FREQUENCY;
+		items[1].initialDelay = 3000000 * DATA_LENGTH / TARGET_READ_FREQUENCY;
 		items[1].targetFrequency = TARGET_FFT_FREQUENCY;
 		items[1].delay = 0;
 		items[1].function = &FourierCallback;
 		items[1].isKernelMode = RLP_FALSE;
 		
-		//#include "setupScheduling.h"
 		setupScheduling();
 	} 
 	else 
@@ -292,7 +186,7 @@ int Start(unsigned int *generalArray, void **args, unsigned int argsCount, unsig
 
 int Stop(unsigned int *generalArray, void **args, unsigned int argsCount, unsigned int *argSize){
 	status = 0;
-	//sendByte(8);
+	
 	pwmSetup(63, PWM_LEVELS);	//reset the pwms back to very high duty cycle
 	//this will hopefully help to avoid damaging the microcontroller if we get large voltages to the analog in when we're not
 	//actively doing gain control
@@ -303,11 +197,13 @@ int Stop(unsigned int *generalArray, void **args, unsigned int argsCount, unsign
 Starts the clocks for the Switched Cap filter, and initalizes the PWMs and sets their duty cycle to 50%
 */
 int Init(unsigned int *generalArray, void **args, unsigned int argsCount, unsigned int *argSize){
-	//start the clock for the SC notch filter (10khz and 20khz signals)
-	//PCONP |= (1<<23) | (1<<27);	//power for Timer3 and I2S
+	//start up the 6kHz clock
 	#include "timer3Clock.h"
+	
+	//start up the 12kHz clock
 	#include "i2sClock.h"
-	//start up the pwms (all pins) with 50% duty cycle
+	
+	//start up the pwms (all pins).  at this point we don't know what channels will run to just start up everything
 	pwmSetup(63, PWM_LEVELS);
 	
 	return 1;

@@ -60,14 +60,3 @@ void sendByte(char c){
 	
 	//make sure you check thats it's ready before sending anything else if not using this function
 }
- 
-/* Some sending test functions*/
-/*
-void testBluetoothSend(){
-	//char* msg = "RLP Bluetooth testing";
-	char* msg = "ABCdef12345";
-	
-	Debug("Start of testBluetoothSend()");
-	sendMsg(msg);
-	Debug("Done sendMsg()");
-}*/

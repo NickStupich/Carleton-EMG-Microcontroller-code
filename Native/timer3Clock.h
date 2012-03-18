@@ -10,10 +10,6 @@ T3CTCR = 0;		//timer mode - every rising pclk edge
 //12 kHz signal
 T3PR = 753;
 
-//T3PR = 456;		//prescale counter counts to 456 + 1 before incrementing timer
-//this should be 449 in theory to produce exactly 10kHz, but imperfectly in the switched cap mean we set the clock off by a little
-//so have the notch perfectly centered at 60Hz
-
 T3MR0 = 1;		//flip bit every timer increment
 T3MCR = 2;		//reset on match with MR0
 T3TCR = 1;		//enable the counter

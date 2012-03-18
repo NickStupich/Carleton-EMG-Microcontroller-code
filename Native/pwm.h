@@ -16,9 +16,9 @@ period = desired pwm cycle period in clock cycles (1/18us)
 void pwmSetup(char pins, unsigned int period);
 
 /*
-pin = 0-5 for pwm1-5
-positiveDutyCycle = length of positive duty cycle in clock cycles(1/18us)
-	this should be less/equal to the period provided to setup()
+pin = 0-5 for pwm1-6
+positiveDutyCycle = length of positive duty cycle in peripheral clock cycles
+	this should be less/equal to the period provided to setup(), but that isn't checked (who knows what the hardware will decide to do
 */
 void setPwm(char pin, unsigned int positiveDutyCycle);
 

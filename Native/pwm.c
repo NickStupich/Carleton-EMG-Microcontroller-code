@@ -22,6 +22,8 @@ void pwmSetup(char pins, unsigned int period){
 				//but setting it high means that we'll have very low gain.  This will hopefully help to produce the ADCs from large voltage spikes
 			
 			//the pin select stuff, different pwms use either PINSEL3 or PINSEl4
+			//this could probably be made a little more efficient (branch for PINSEL3 or PINSEL4, 
+			//then PINSELx |= 1<<(i<<2+1) (not sure if thats exactly correct but general idea)
 			switch(i)
 			{
 				case 0:
@@ -55,7 +57,7 @@ void pwmSetup(char pins, unsigned int period){
 }
 
 void setPwm(char pin, unsigned int positiveDutyCycle){
-	//normally subtracting 1 from duty cycle makes things like up nicely
+	//normally subtracting 1 from duty cycle makes things line up nicely
 	//however, if 0 or the period is provided, they seem to flip (0 gives the result
 	//that would be expected from the period, and the period produces the result expected
 	//from providing 0.  So this fixes that...
@@ -66,6 +68,11 @@ void setPwm(char pin, unsigned int positiveDutyCycle){
 		positiveDutyCycle = -1;
 	else
 		positiveDutyCycle-=1;
+	
+	//this should be done more efficiently, but PWM1MRx (x = 1-6) are not all sequential in addresses.  could still break up into 2
+	//cases and then pointer arithmeticize to get the actual address.  something like (but i don't think this works):
+	//if(pin < 3)	*((&PWM1MR1) + pin) = positiveDutyCycle-1;
+	//else *((&PWM1CR2) + pin) = positiveDutyCycle-1;
 	
 	switch(pin)
 	{
@@ -88,18 +95,4 @@ void setPwm(char pin, unsigned int positiveDutyCycle){
 			PWM1MR6 = positiveDutyCycle;
 			break;
 	}
-	/*
-		PWM1MR4, 5, 6 are not together in memory with 1, 2, 3, 
-		so we have 2 separate cases depending on which it is
-		instead of having to subtract 3 from pin, we just add 
-		pin to PWM1CR2 (3 less than PWM1MR4)
-	*/
-	/*
-	if(pin < 3)
-	{
-		*((&PWM1MR1) + pin) = positiveDutyCycle-1;
-	} else
-	{
-		*((&PWM1CR2) + pin) = positiveDutyCycle-1;
-	}*/
-	}
+}

@@ -13,8 +13,6 @@
 
 #define MAX_TO_SEND_FLOAT		254.0f
 
-#define MAX_SQRT_ERROR	0.1f
-
 //number of individual frequencies that are stuck together into 1 bin before being sent off 
 #define FREQUENCIES_PER_BIN		3
 

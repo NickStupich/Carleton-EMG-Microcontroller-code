@@ -64,9 +64,6 @@ void processCallback(void *arg){
 		items[id].delay = (items[id].delay * items[id].readsThisSecond) / items[id].targetFrequency;
 #endif
 		
-		//Debug_uint(items[id].readsThisSecond);
-		//Debug_uint(items[id].delay);
-		
 		items[id].readsThisSecond = 0;
 	}
 	

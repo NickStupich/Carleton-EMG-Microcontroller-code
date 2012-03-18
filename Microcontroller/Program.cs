@@ -11,7 +11,6 @@ namespace ComputerBluetoothNative
 {
     public class Program
     {
-        //static SerialPort debugPort;
         static SerialPort dataPort;
 
         static RLP.Procedure rlpStop;
@@ -52,7 +51,7 @@ namespace ComputerBluetoothNative
             dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived); //open before attaching the event - due to bug in framework
             //found at http://tinyclr.com/forum/2/4426/
 
-            Thread.Sleep(2000); //this makes it easier to install new stuff
+            Thread.Sleep(2000); //this makes it easier to install new stuff if anything crashes
 
             rlpInit.Invoke();
             Thread.Sleep(Timeout.Infinite);

@@ -2,7 +2,9 @@
 
 #if CUSTOM_FLOAT_COMPARE == 1
 
-/*works only when both numbers are >0*/
+/* figure out whether x < y without needing the library with float compare() function defined in it.
+returns 1 or 0 (true or false)
+*/
 unsigned int floatLT(float x, float y){
 	typedef union data{
 		float f;
