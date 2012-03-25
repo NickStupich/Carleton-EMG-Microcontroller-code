@@ -9,7 +9,7 @@
 #define time_t			unsigned long
 
 #if makeInline == 1
-#define readTimer()		((unsigned int)T0TC)
+#define readTimer()		((time_t)T0TC)
 #else
 time_t readTimer();
 #endif
