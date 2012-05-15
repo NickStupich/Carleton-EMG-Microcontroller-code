@@ -42,16 +42,16 @@ namespace ComputerBluetoothNative
             //sets up all analog pins as reading, and pwm pins as pwms
             for (int i = 0; i < 6; i++)
             {
-                new AnalogIn((AnalogIn.Pin)i);
-                new PWM((PWM.Pin)i+1);
+                //new AnalogIn((AnalogIn.Pin)i);
+                //new PWM((PWM.Pin)i+1);
             }
 
-            dataPort = new SerialPort("COM2", 57600, System.IO.Ports.Parity.None, 8, StopBits.One);
-            dataPort.Open();
-            dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived); //open before attaching the event - due to bug in framework
+            //dataPort = new SerialPort("COM2", 57600, System.IO.Ports.Parity.None, 8, StopBits.One);
+            //dataPort.Open();
+            //dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived); //open before attaching the event - due to bug in framework
             //found at http://tinyclr.com/forum/2/4426/
 
-            Thread.Sleep(2000); //this makes it easier to install new stuff if anything crashes
+            Thread.Sleep(3000); //this makes it easier to install new stuff if anything crashes
 
             rlpInit.Invoke();
             Thread.Sleep(Timeout.Infinite);
@@ -64,6 +64,9 @@ namespace ComputerBluetoothNative
             while (dataPort.BytesToRead > 0)
             {
                 dataPort.Read(buffer, 0, 1);
+                Debug.Print("Read byte: " + buffer[0]);
+                dataPort.Write(buffer, 0, 1);
+                /*
                 byte data = buffer[0];
                 int result;
                 switch (data & (1 << START_BIT))
@@ -76,7 +79,7 @@ namespace ComputerBluetoothNative
                         result = rlpStart.Invoke(data);
                         Debug.Print("Started with result " + result);
                         break;
-                }
+                }*/
 
             }
 
