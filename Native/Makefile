@@ -13,7 +13,7 @@ LD		=arm-none-eabi-gcc
 
 CCFLAGS=  -g -mlittle-endian -mcpu=arm7tdmi  -Wall -I. -I$(INCL)
 CCFLAGS+= -mapcs-frame -fno-builtin -g0 -save-temps 
-CCFLAGS+= -Os
+
 
 LDFLAGS =-nostartfiles -Wl,--Map -Wl,./Output/$(OUTFILE).map
 LDFLAGS+=-lc -lgcc -Wl,--omagic
@@ -28,7 +28,8 @@ OBJS+= Debug.o \
 		time.o \
 		pwm.o \
 		helpers.o \
-		gainControl.o
+		gainControl.o\
+		GPIOSetUp.o
 		
 rebuild: clean all del_o
 
@@ -65,6 +66,9 @@ helpers.o: helpers.c helpers.h
 
 gainControl.o: gainControl.c gainControl.h
 	$(CC) -c $(CCFLAGS) gainControl.c -o gainControl.o
+
+GPIOSetUp.o: GPIOSetUp.c GPIOSetUp.h
+	$(CC) -c $(CCFLAGS) GPIOSetUp.c -o GPIOSetUp.o
 	
 clean:
 	-rm *.o ./Output/*.elf ./Output/*.map
