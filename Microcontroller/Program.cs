@@ -53,7 +53,8 @@ namespace ComputerBluetoothNative
 
             Thread.Sleep(3000); //this makes it easier to install new stuff if anything crashes
 
-            rlpInit.Invoke();
+            int x = rlpInit.Invoke();
+            Debug.Print("hello");
             Thread.Sleep(Timeout.Infinite);
 
         }
