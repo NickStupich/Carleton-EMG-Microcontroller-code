@@ -11,16 +11,20 @@ int Stop(unsigned int *generalArray, void **args, unsigned int argsCount, unsign
 
 
 int Init(unsigned int *generalArray, void **args, unsigned int argsCount, unsigned int *argSize){
-	//int x;
-	//char y;
-	//x = 68;
-	//y = GPIOPinSetup(x, 0);
-	//y = DigitalOutput(x, 1);
-	//int z = DigitalRead(x);
-
-
+	unsigned int z;
+	unsigned int data;
 	int x = InitSPI();
+	int z = InitADS;
 
-	return ;
+
+	
+
+	//FIO0CLR |= 1<<16;
+	//for (z=0; z<1000000; z++){
+	//writeToSPI0(0xEE);
+	//data = readSPI0();
+	//}	
+	//FIO0SET |= 1<<16;
+	return z;
 }
 

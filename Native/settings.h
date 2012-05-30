@@ -18,7 +18,7 @@ HOWEVER:
 #define makeInline						1
 
 //debugging on or off
-#define DEBUG_ON 						0
+#define DEBUG_ON 						1
 
 //whether we can send strings over bluetooth
 #define HAS_STRING_FUNC					0

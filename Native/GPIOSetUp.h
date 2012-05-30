@@ -1,12 +1,16 @@
 #ifndef GPIOSetUp
 #define GPIOSetUp
 
-char GPIOPinSetup(char pinNumber, char direction);
+void GPIOPinSetup(char pinNumber, char direction);
 
-char DigitalOutput(char pinNumber, char state);
+void DigitalOutput(char pinNumber, char state);
 
 int DigitalRead(char pinNumber);
 
 int InitSPI();
+
+void writeToSPI0(unsigned int Data);
+
+unsigned int readSPI0();
 
 #endif
