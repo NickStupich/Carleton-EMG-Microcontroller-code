@@ -1,5 +1,7 @@
 #include <GPIOSetUp.h>
 #include <lpc23xx.h>
+#include <time.h>
+#include <Debug.h>
 
 #define PINSEL(x)	(*(volatile unsigned long *)(PINSEL_BASE_ADDR + 4*x))
 #define PINMODE(x)	(*(volatile unsigned long *)(PINSEL_BASE_ADDR + 0x40 + 4*x))
@@ -87,7 +89,7 @@ int InitSPI(){
 
 
 	//Configure SPI clock frequency PCLKSEL0/(SPI Clock Counter)
-	S0SPCCR = 0x08;
+	S0SPCCR = 0x20;
 
 	//SPI Test Register
 	//SPTCR |= 0xFE;
@@ -96,71 +98,141 @@ int InitSPI(){
 	
 }
 
-
-void SPI0_Read_Write(unsigned int Data){
+//write to SPI0 MOSI pin 16
+void SPI0_Write(unsigned char Data){
 	//FIO0CLR |= 1<<16;
 	
-	//for dummy data (0xAA), write 0x00 to SPI to activate clock while reading the incoming data from ADS
-	if(Data == 0xAA){
-	S0SPDR = 0x00;
-	while((S0SPSR & 0x80) == 0);
-	int read_Data = S0SPDR;       //read the incoming data from the ADS and store in variable
-	return read_Data;
-
-	else {
-		S0SPDR = Data
-		
-
 	
-	return;
-	//unsigned int dummy = S0SPDR;
+		S0SPDR = Data;
+		while((S0SPSR & 0x80) == 0);
+		return;
+
 	//FIO0SET |= 1<<16;
 }
 
-unsigned int readSPI0(){
+//read from SPI0 bit 17
+unsigned char SPI0_Read(){
 
-	unsigned int Data;
-	//S0SPDR = 0xFF;
+	unsigned char Data;
+	//for dummy data (0xAA), write 0x00 to SPI to activate clock while reading the incoming data from ADS
+	S0SPDR = 0x00;
 	while (!(S0SPSR & 0x80));
 	Data = S0SPDR;
 	return Data;
 	
 }
 
-int InitADS(){
+//Initialize SPI communication between uC and ADS1298
+void Init_SPI_wADS(){
 
-	unsigned char datain[2]
+	unsigned char datain[26];			//register information from ADS1298 stored in a 26 byte array corresponding to 26 registers
 
 	GPIOPinSetup(67, 1);  //SPI_Start Pin. Set high to begin converstions
 	GPIOPinSetup(76, 1);  //SPI_Reset, Toggle the pin low then high to reset the chip
 	GPIOPinSetup(77, 0);  //SPI_DRDY pin as input
 	
-	DigitalOutput(67, 1); //Set SPI_Start Pin low, Do not begin conversions
+	DigitalOutput(67, 0); //Set SPI_Start Pin low, Do not begin conversions
 	
 	FIO0SET |= 1<<16;		  //Set CS pin to high
 	
 	//Reset ADS1298
 	DigitalOutput(76, 1);	  //Set SPI_Reset pin high
-	Delay_us(100);
+	delay_us(100);
 	DigitalOutput(76, 0);	  //Set SPI_Reset pin low
-	Delay_us(100);
+	delay_us(100);
 	DigitalOutput(76, 1);	  //Set SPI_Reset pin high
 
 	//Stop read data continuously mode
 	FIO0CLR |= 1<<16;		//Set CS pin low
 	delay_us(4);
-	writetoSPI(0x11);
+	SPI0_Write(0x11);
 	delay_us(4);
 	FIO0SET |= 1<<16;       //Set CS pin high
 	delay_us(4);
 
+	
+	//Write Registry Commands
+	FIO0CLR |= 1<<16;
+	delay_us(4);
+	SPI0_Write(0x40);	//Opcode 1
+	SPI0_Write(0x19);	//Opcode 2
+	SPI0_Write(0x92);   // 1. Write to device ID register
+	SPI0_Write(0x06);	// 2. Write to Config 1 Register
+	SPI0_Write(0x00);	// 3. Write to Config 2 Register
+	SPI0_Write(0x61);   // 4. Write to Config 3 Register
+	SPI0_Write(0x00);   // 5. Write to LOFF Register
+	SPI0_Write(0x00);   // 6. Write to Ch1Set Register
+	SPI0_Write(0x00);   // 7. Write to Ch2Set Register
+	SPI0_Write(0x00);   // 8. Write to Ch3Set Register
+	SPI0_Write(0x00);   // 9. Write to Ch4Set Register
+	SPI0_Write(0x00);   // 10. Write to Ch5Set Register
+	SPI0_Write(0x00);   // 11. Write to Ch6Set Register
+	SPI0_Write(0x00);   // 12. Write to Ch7Set Register
+	SPI0_Write(0x00);   // 13. Write to Ch8Set Register
+	SPI0_Write(0x00);   // 14. Write to RLO_SENSP Register
+	SPI0_Write(0x00);   // 15. Write to RLO_SENSN Register
+	SPI0_Write(0x00);   // 16. Write to LOFF_SENSP Register
+	SPI0_Write(0x00);   // 17. Write to LOFF_SENSN Register
+	SPI0_Write(0x00);   // 18. Write to LOFF_FLIP Register
+	SPI0_Write(0x00);   // 19. Write to LOFF_STATP Register
+	SPI0_Write(0x00);   // 20. Write to LOFF_STATN Register
+	SPI0_Write(0x0f);   // 21. Write to GPIO Register
+	SPI0_Write(0x00);   // 22. Write to PACE Register
+	SPI0_Write(0x00);   // 23. Write to RESP Register
+	SPI0_Write(0x00);   // 24. Write to CONFIG4 Register
+	SPI0_Write(0x00);   // 25. Write to WCT1 Register
+	SPI0_Write(0x00);   // 26. Write to WCT2 Register
+
+	delay_us(4);
+	FIO0SET |= 1<<16;   //set CS pin to high
+	delay_us(4);
+
+
 	//Read Registry Command
 	FIO0CLR |= 1<<16;		//Set CS pin low
 	delay_us(4);
-	writetoSPI(0x20);		//Opcode 1
-	writetoSPI(0x01);		//Opcode 2
+	SPI0_Write(0x20);		//Opcode 1
+	//delay_us(4);
+	SPI0_Write(0x19);		//Opcode 2
+	delay_us(4);
 
-	datain[0] = 
+	int x;
+	for (x=0; x<26; x++){
+	datain[x] = SPI0_Read();
+	}
+	delay_us(4);
+	FIO0SET |= 1<<16;	//set CS pin to high
+	delay_us(4);
+
+	for (x=0; x<26; x++){
+		Debug_uint(datain[x]);
+	}
+	
+
+	
+	
+	//Enable Read Data Continiously Mode
+	FIO0CLR |= 1<<16;        //Set CS pin low
+	delay_us(4);
+	SPI0_Write(0x10);
+	delay_us(4);
+	FIO0SET |= 1<<16;       //Set CS pin high
+	delay_us(4);
+	
+	
+	DigitalOutput(67, 1);  //SPI_Start Pin set high to begin conversion
+	delay_us(8);
+	
+	
+	
+	return;
+
+}
+
+void Initialize_eint3(){
+
+	PINSEL4 |= 1<<26;
+	EXTMODE |= 1<<3;
 
 
 

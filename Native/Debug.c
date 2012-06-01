@@ -3,7 +3,7 @@
 #include "settings.h"
 
 #define UINT_STRING_LENGTH	10
-#define LSR_TEMT    (1<<7)
+#define LSR_TEMT    (1<<6)
 #define SERIAL_PORT_SENDING_COM2	!(U1LSR & LSR_TEMT)
 
 #if DEBUG_ON == 1

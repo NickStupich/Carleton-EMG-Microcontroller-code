@@ -34,128 +34,129 @@ LOAD c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2/../../../../arm-none-eabi/lib
 END GROUP
                 0x00000000                . = ALIGN (0x4)
 
-.text           0x40000440     0x23f4
+.text           0x40000440     0x2740
  *(.text)
  .text          0x40000440      0x20c Debug.o
                 0x40000440                _Debug
                 0x400004d4                _Debug_uint
- .text          0x4000064c      0x138 main.o
+ .text          0x4000064c      0x158 main.o
                 0x4000064c                Start
                 0x40000680                Stop
                 0x400006b4                Init
- .text          0x40000784       0x50 Bluetooth.o
-                0x40000784                sendByte
- .text          0x400007d4       0x5c AnalogRead.o
-                0x400007d4                analogRead
- .text          0x40000830      0xdc0 fourier.o
-                0x40000830                four1
-                0x40000cfc                _sqrt
-                0x40000d90                realft
-                0x400012cc                transformToBins
- .text          0x400015f0       0x68 sin.o
-                0x400015f0                sin
- .text          0x40001658       0x70 time.o
-                0x40001658                delay_us
- .text          0x400016c8      0x304 pwm.o
-                0x400016c8                pwmSetup
-                0x400018b4                setPwm
- .text          0x400019cc       0x44 helpers.o
-                0x400019cc                floatLT
- .text          0x40001a10      0x2c0 gainControl.o
-                0x40001a10                addGainValue
- .text          0x40001cd0      0x56c GPIOSetUp.o
-                0x40001cd0                GPIOPinSetup
-                0x40001ec8                DigitalOutput
-                0x40001f94                DigitalRead
-                0x40002018                InitSPI
-                0x40002170                writeToSPI0
-                0x400021ec                readSPI0
- .text          0x4000223c      0x2ac c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
-                0x4000223c                __aeabi_frsub
-                0x40002244                __subsf3
-                0x40002244                __aeabi_fsub
-                0x40002248                __aeabi_fadd
-                0x40002248                __addsf3
-                0x40002404                __aeabi_ui2f
-                0x40002404                __floatunsisf
-                0x4000240c                __aeabi_i2f
-                0x4000240c                __floatsisf
-                0x4000242c                __aeabi_ul2f
-                0x4000242c                __floatundisf
-                0x4000243c                __aeabi_l2f
-                0x4000243c                __floatdisf
- .text          0x400024e8      0x2f8 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
-                0x400024e8                __mulsf3
-                0x400024e8                __aeabi_fmul
-                0x40002680                __aeabi_fdiv
-                0x40002680                __divsf3
- .text          0x400027e0       0x54 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
-                0x400027e0                __fixunssfsi
-                0x400027e0                __aeabi_f2uiz
+ .text          0x400007a4       0x50 Bluetooth.o
+                0x400007a4                sendByte
+ .text          0x400007f4       0x5c AnalogRead.o
+                0x400007f4                analogRead
+ .text          0x40000850      0xdc0 fourier.o
+                0x40000850                four1
+                0x40000d1c                _sqrt
+                0x40000db0                realft
+                0x400012ec                transformToBins
+ .text          0x40001610       0x68 sin.o
+                0x40001610                sin
+ .text          0x40001678       0x70 time.o
+                0x40001678                delay_us
+ .text          0x400016e8      0x304 pwm.o
+                0x400016e8                pwmSetup
+                0x400018d4                setPwm
+ .text          0x400019ec       0x44 helpers.o
+                0x400019ec                floatLT
+ .text          0x40001a30      0x2c0 gainControl.o
+                0x40001a30                addGainValue
+ .text          0x40001cf0      0x898 GPIOSetUp.o
+                0x40001cf0                GPIOPinSetup
+                0x40001ee8                DigitalOutput
+                0x40001fb4                DigitalRead
+                0x40002038                InitSPI
+                0x40002190                SPI0_Write
+                0x400021e0                SPI0_Read
+                0x4000223c                Init_SPI_wADS
+ .text          0x40002588      0x2ac c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+                0x40002588                __aeabi_frsub
+                0x40002590                __subsf3
+                0x40002590                __aeabi_fsub
+                0x40002594                __aeabi_fadd
+                0x40002594                __addsf3
+                0x40002750                __aeabi_ui2f
+                0x40002750                __floatunsisf
+                0x40002758                __aeabi_i2f
+                0x40002758                __floatsisf
+                0x40002778                __aeabi_ul2f
+                0x40002778                __floatundisf
+                0x40002788                __aeabi_l2f
+                0x40002788                __floatdisf
+ .text          0x40002834      0x2f8 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+                0x40002834                __mulsf3
+                0x40002834                __aeabi_fmul
+                0x400029cc                __aeabi_fdiv
+                0x400029cc                __divsf3
+ .text          0x40002b2c       0x54 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+                0x40002b2c                __fixunssfsi
+                0x40002b2c                __aeabi_f2uiz
 
-.glue_7         0x40002834        0x0
+.glue_7         0x40002b80        0x0
  .glue_7        0x00000000        0x0 linker stubs
 
-.glue_7t        0x40002834        0x0
+.glue_7t        0x40002b80        0x0
  .glue_7t       0x00000000        0x0 linker stubs
 
-.vfp11_veneer   0x40002834        0x0
+.vfp11_veneer   0x40002b80        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
 
-.v4_bx          0x40002834        0x0
+.v4_bx          0x40002b80        0x0
  .v4_bx         0x00000000        0x0 linker stubs
-                0x40002834                . = ALIGN (0x4)
+                0x40002b80                . = ALIGN (0x4)
 
-.rodata         0x40002834       0x74
+.rodata         0x40002b80       0x74
  *(.rodata)
- .rodata        0x40002834       0x24 sin.o
-                0x40002834                data
- .rodata        0x40002858       0x50 gainControl.o
-                0x40002858                gainLevels
-                0x400028a4                center
-                0x400028a8                . = ALIGN (0x4)
+ .rodata        0x40002b80       0x24 sin.o
+                0x40002b80                data
+ .rodata        0x40002ba4       0x50 gainControl.o
+                0x40002ba4                gainLevels
+                0x40002bf0                center
+                0x40002bf4                . = ALIGN (0x4)
 
-.data           0x400028a8       0x3c
+.data           0x40002bf4       0x3c
  *(.data)
- .data          0x400028a8        0x0 Debug.o
- .data          0x400028a8        0x0 main.o
- .data          0x400028a8        0x0 Bluetooth.o
- .data          0x400028a8        0x0 AnalogRead.o
- .data          0x400028a8        0x0 fourier.o
- .data          0x400028a8        0x0 sin.o
- .data          0x400028a8        0x0 time.o
- .data          0x400028a8        0x4 pwm.o
-                0x400028a8                _period
- .data          0x400028ac        0x0 helpers.o
- .data          0x400028ac       0x38 gainControl.o
-                0x400028ac                pwmLevels
-                0x400028b4                emaNums
-                0x400028cc                emaDenoms
- .data          0x400028e4        0x0 GPIOSetUp.o
- .data          0x400028e4        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
- .data          0x400028e4        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
- .data          0x400028e4        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
-                0x400028e4                . = ALIGN (0x4)
+ .data          0x40002bf4        0x0 Debug.o
+ .data          0x40002bf4        0x0 main.o
+ .data          0x40002bf4        0x0 Bluetooth.o
+ .data          0x40002bf4        0x0 AnalogRead.o
+ .data          0x40002bf4        0x0 fourier.o
+ .data          0x40002bf4        0x0 sin.o
+ .data          0x40002bf4        0x0 time.o
+ .data          0x40002bf4        0x4 pwm.o
+                0x40002bf4                _period
+ .data          0x40002bf8        0x0 helpers.o
+ .data          0x40002bf8       0x38 gainControl.o
+                0x40002bf8                pwmLevels
+                0x40002c00                emaNums
+                0x40002c18                emaDenoms
+ .data          0x40002c30        0x0 GPIOSetUp.o
+ .data          0x40002c30        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+ .data          0x40002c30        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+ .data          0x40002c30        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+                0x40002c30                . = ALIGN (0x4)
 
-.bss            0x400028e4        0x0
-                0x400028e4                __bss_start__ = .
+.bss            0x40002c30        0x0
+                0x40002c30                __bss_start__ = .
  *(.bss)
- .bss           0x400028e4        0x0 Debug.o
- .bss           0x400028e4        0x0 main.o
- .bss           0x400028e4        0x0 Bluetooth.o
- .bss           0x400028e4        0x0 AnalogRead.o
- .bss           0x400028e4        0x0 fourier.o
- .bss           0x400028e4        0x0 sin.o
- .bss           0x400028e4        0x0 time.o
- .bss           0x400028e4        0x0 pwm.o
- .bss           0x400028e4        0x0 helpers.o
- .bss           0x400028e4        0x0 gainControl.o
- .bss           0x400028e4        0x0 GPIOSetUp.o
- .bss           0x400028e4        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
- .bss           0x400028e4        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
- .bss           0x400028e4        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
-                0x400028e4                __bss_end__ = .
-                0x400028e4                end = .
+ .bss           0x40002c30        0x0 Debug.o
+ .bss           0x40002c30        0x0 main.o
+ .bss           0x40002c30        0x0 Bluetooth.o
+ .bss           0x40002c30        0x0 AnalogRead.o
+ .bss           0x40002c30        0x0 fourier.o
+ .bss           0x40002c30        0x0 sin.o
+ .bss           0x40002c30        0x0 time.o
+ .bss           0x40002c30        0x0 pwm.o
+ .bss           0x40002c30        0x0 helpers.o
+ .bss           0x40002c30        0x0 gainControl.o
+ .bss           0x40002c30        0x0 GPIOSetUp.o
+ .bss           0x40002c30        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_addsubsf3.o)
+ .bss           0x40002c30        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_muldivsf3.o)
+ .bss           0x40002c30        0x0 c:/yagarto/bin/../lib/gcc/arm-none-eabi/4.6.2\libgcc.a(_arm_fixunssfsi.o)
+                0x40002c30                __bss_end__ = .
+                0x40002c30                end = .
 OUTPUT(./Output/RLP_test.elf elf32-littlearm)
 
 .comment        0x00000000       0x11

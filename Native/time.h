@@ -14,4 +14,6 @@
 time_t readTimer();
 #endif
 
+void delay_us(unsigned int delay);
+
 #endif

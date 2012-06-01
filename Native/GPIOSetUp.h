@@ -9,8 +9,11 @@ int DigitalRead(char pinNumber);
 
 int InitSPI();
 
-void writeToSPI0(unsigned int Data);
+void SPI0_Write(unsigned char Data);
 
-unsigned int readSPI0();
+void SPI0_Read();
 
+unsigned char Init_SPI_wADS();
+
+void Initialize_eint3();
 #endif

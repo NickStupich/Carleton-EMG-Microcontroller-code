@@ -46,8 +46,8 @@ namespace ComputerBluetoothNative
                 //new PWM((PWM.Pin)i+1);
             }
 
-            //dataPort = new SerialPort("COM2", 57600, System.IO.Ports.Parity.None, 8, StopBits.One);
-            //dataPort.Open();
+            dataPort = new SerialPort("COM2", 57600, System.IO.Ports.Parity.None, 8, StopBits.One);
+            dataPort.Open();
             //dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived); //open before attaching the event - due to bug in framework
             //found at http://tinyclr.com/forum/2/4426/
 
