@@ -7,13 +7,17 @@ void DigitalOutput(char pinNumber, char state);
 
 int DigitalRead(char pinNumber);
 
-int InitSPI();
+void InitSPI();
 
 void SPI0_Write(unsigned char Data);
 
-void SPI0_Read();
+unsigned char SPI0_Read();
 
-unsigned char Init_SPI_wADS();
+void Init_SPI_wADS();
 
-void Initialize_eint3();
+void Initialize_eint1();
+
+
+void  isr_handler_eint1(void) __attribute__ ((interrupt ("IRQ")));
+
 #endif

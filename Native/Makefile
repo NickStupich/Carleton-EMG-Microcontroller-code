@@ -23,7 +23,6 @@ OBJS+= Debug.o \
 		main.o \
 		Bluetooth.o \
 		AnalogRead.o \
-		fourier.o \
 		sin.o\
 		time.o \
 		pwm.o \

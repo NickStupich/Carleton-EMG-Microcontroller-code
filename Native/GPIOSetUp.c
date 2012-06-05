@@ -64,7 +64,7 @@ int DigitalRead(char pinNumber){
 	
 }
 
-int InitSPI(){
+void InitSPI(){
 
 	PCONP |= 1<<8;
 	
@@ -94,7 +94,7 @@ int InitSPI(){
 	//SPI Test Register
 	//SPTCR |= 0xFE;
 
-	return S0SPCR;
+	return;
 	
 }
 
@@ -125,7 +125,7 @@ unsigned char SPI0_Read(){
 //Initialize SPI communication between uC and ADS1298
 void Init_SPI_wADS(){
 
-	unsigned char datain[26];			//register information from ADS1298 stored in a 26 byte array corresponding to 26 registers
+	//unsigned char datain[26];			//register information from ADS1298 stored in a 26 byte array corresponding to 26 registers
 
 	GPIOPinSetup(67, 1);  //SPI_Start Pin. Set high to begin converstions
 	GPIOPinSetup(76, 1);  //SPI_Reset, Toggle the pin low then high to reset the chip
@@ -187,7 +187,7 @@ void Init_SPI_wADS(){
 	FIO0SET |= 1<<16;   //set CS pin to high
 	delay_us(4);
 
-
+	/*
 	//Read Registry Command
 	FIO0CLR |= 1<<16;		//Set CS pin low
 	delay_us(4);
@@ -204,10 +204,11 @@ void Init_SPI_wADS(){
 	FIO0SET |= 1<<16;	//set CS pin to high
 	delay_us(4);
 
+	
 	for (x=0; x<26; x++){
 		Debug_uint(datain[x]);
 	}
-	
+	*/
 
 	
 	
@@ -229,12 +230,53 @@ void Init_SPI_wADS(){
 
 }
 
-void Initialize_eint3(){
+void Initialize_eint1(){
 
-	PINSEL4 |= 1<<26;
-	EXTMODE |= 1<<3;
+	PINSEL4 |= 1<<22;			//P2.10 is EINT0 Interrupt Enabled and attached to DRDY pin of ADS1298
+	Debug_uint(PINSEL4);
+	//VICIntSelect |= 1<<15;
+	//Debug_uint(VICIntSelect);
+	VICIntEnClr = (1<<15);
+	EXTMODE |= 1<<1;			//EINT3 is edge-sensitive
+	Debug_uint(EXTMODE);
+	EXTPOLAR |= 0xFD;		//Interrupt enabled on the falling edge
+	Debug_uint(EXTPOLAR);
+	VICVectAddr15 = (unsigned)isr_handler_eint1;  //assign ISR handler function to this VIC address
+	Debug_uint(VICVectAddr15);
+	VICVectPriority15 &= 0xFFFFFFF1;		//Set this interrupt to highest priority
+	VICVectCntl0 |= 0x00000020;
+	VICVectCntl15 |= 0x00000020;
+	Debug_uint(VICVectPriority15);
+	EXTINT |= 1<<1;						//clear the peripheral interrupt flag
+	Debug_uint(EXTINT);
+	VICIntEnable |= 1<<15;				//Enable interrupt in the VIC
+	Debug_uint(VICIntEnable);
 
+	asm("msr CPSR_c, 0x13 \n");
+	
 
+}
+
+//Interrupt Handling routine for external interrupt 3
+void  isr_handler_eint1(void)  {
+	
+	Debug_uint(65);				//display that interrupt happened
+	//char DataArray[27];          //ADS1298 24bit channel data will be stored here
+	//int b;
+
+	VICIntEnClr = (1 << 15);	// Disable EINT3 in the VIC
+	//FIO0CLR |= 1<<16;			//Set CS pin low
+
+	//for (b=0; b<27; b++){
+	//	 DataArray[b] = SPI0_Read();
+	//}
+
+	//FIO0SET |= 1<<16;			//Set CS pin low
+					
+	EXTINT |= 1<<1;				 //clear the peripheral interrupt flag
+	VICIntEnable |= 1<<15;		//Enable EINT3 in the VIC
+	VICVectAddr = 0;			//Acknowledge Interrupt
+}
 
 
 
