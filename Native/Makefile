@@ -12,7 +12,7 @@ CC		=arm-none-eabi-gcc
 LD		=arm-none-eabi-gcc
 
 CCFLAGS=  -g -mlittle-endian -mcpu=arm7tdmi  -Wall -I. -I$(INCL)
-CCFLAGS+= -mapcs-frame -fno-builtin -g0 -save-temps 
+CCFLAGS+= -mapcs-frame -fno-builtin -g0 -save-temps -O3
 
 
 LDFLAGS =-nostartfiles -Wl,--Map -Wl,./Output/$(OUTFILE).map
