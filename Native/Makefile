@@ -28,7 +28,8 @@ OBJS+= Debug.o \
 		pwm.o \
 		helpers.o \
 		gainControl.o\
-		GPIOSetUp.o
+		GPIOSetUp.o\
+		SPI_Protocol.o
 		
 rebuild: clean all del_o
 
@@ -68,6 +69,9 @@ gainControl.o: gainControl.c gainControl.h
 
 GPIOSetUp.o: GPIOSetUp.c GPIOSetUp.h
 	$(CC) -c $(CCFLAGS) GPIOSetUp.c -o GPIOSetUp.o
+
+SPI_Protocol.o: SPI_Protocol.c SPI_Protocol.h
+	$(CC) -c $(CCFLAGS) SPI_Protocol.c -o SPI_Protocol.o
 	
 clean:
 	-rm *.o ./Output/*.elf ./Output/*.map

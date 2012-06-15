@@ -46,16 +46,24 @@ namespace ComputerBluetoothNative
                 //new PWM((PWM.Pin)i+1);
             }
 
-
+            /*To change baud rate of the bluesmirf gold dongle:
+             1. Enter command mode by typind "$$$" in tera term withing the initial 60 seconds after powering the dongle
+             2. Once command mode is entered type "d" to see the current baud rate
+             3. Type "su,115" for example to change the baud rate to 115k
+             4. Once the AOK command pops up on the terminal the baud rate has succesfully been changed
+             5. Reset the power of the dongle
+             6. Video on how to do this is available at http://www.youtube.com/watch?v=Qa-G0FvI98U
+            */
             dataPort = new SerialPort("COM2", 115200, System.IO.Ports.Parity.None, 8, StopBits.One);
             dataPort.Open();
-            //dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived); //open before attaching the event - due to bug in framework
+            dataPort.DataReceived += new SerialDataReceivedEventHandler(dataPort_DataReceived); //open before attaching the event - due to bug in framework
             //found at http://tinyclr.com/forum/2/4426/
 
             Thread.Sleep(3000); //this makes it easier to install new stuff if anything crashes
 
-            int x = rlpInit.Invoke();
-            Debug.Print("hello" + x.ToString());
+            
+            //int x = rlpInit.Invoke();
+            //Debug.Print("hello" + x.ToString());
             Thread.Sleep(Timeout.Infinite);
             //GHIElectronics.NETMF.FEZ.FEZ_Pin.Digital
         }
@@ -67,10 +75,24 @@ namespace ComputerBluetoothNative
             {
                 dataPort.Read(buffer, 0, 1);
                 Debug.Print("Read byte: " + buffer[0]);
-                dataPort.Write(buffer, 0, 1);
-                /*
+                //dataPort.Write(buffer, 0, 1);
+                
                 byte data = buffer[0];
                 int result;
+                if (data == 78)
+                {
+                    result = rlpInit.Invoke(data);
+                    Debug.Print("Started with result " + result);
+                    break;
+                }
+                else
+                {
+                    result = rlpStop.Invoke();
+                    Debug.Print("Stopped with result " + result);
+                    break;
+                }
+                
+                /*
                 switch (data & (1 << START_BIT))
                 {
                     case 0:
@@ -81,7 +103,8 @@ namespace ComputerBluetoothNative
                         result = rlpStart.Invoke(data);
                         Debug.Print("Started with result " + result);
                         break;
-                }*/
+                }
+                 * */
 
             }
 
